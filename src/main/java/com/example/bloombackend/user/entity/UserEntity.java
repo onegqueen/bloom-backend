@@ -1,6 +1,7 @@
 package com.example.bloombackend.user.entity;
 
 
+import com.example.bloombackend.oauth.OAuthProvider;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

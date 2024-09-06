@@ -11,21 +11,24 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.example.bloombackend.oauth.OAuthProvider;
-import com.example.bloombackend.oauth.dto.response.KakaoInfoResponse;
+import com.example.bloombackend.oauth.controller.dto.response.KakaoInfoResponse;
 import com.example.bloombackend.oauth.token.KakaoTokens;
 
 @Component
 public class KaKaoApiClient {
 	private static final String GRANT_TYPE = "authorization_code";
 
-	@Value("${oauth.kakao.uri.token-uri}")
+	@Value("${oauth.kakao.uri.token-url}")
 	private String tokenUrl;
 
-	@Value("${oauth.kakao.uri.user-info-uri}")
+	@Value("${oauth.kakao.uri.user-info-url}")
 	private String userInfoUrl;
 
 	@Value("${oauth.kakao.client-id}")
 	private String clientId;
+
+	@Value("${oauth.kakao.redirect-uri}")
+	private String redirectUri;
 
 	private final RestTemplate restTemplate;
 
@@ -49,7 +52,7 @@ public class KaKaoApiClient {
 		body.add("code", authorizationCode);
 		body.add("grant_type", GRANT_TYPE);
 		body.add("client_id", clientId);
-		body.add("redirect_uri", "http://localhost:8080/oauth/kakao");
+		body.add("redirect_uri", redirectUri);
 
 		HttpEntity<?> request = new HttpEntity<>(body, headers);
 
@@ -71,5 +74,10 @@ public class KaKaoApiClient {
 		HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
 
 		return restTemplate.postForObject(url, request, KakaoInfoResponse.class);
+	}
+
+	public String getAuthUrl() {
+		return "https://kauth.kakao.com/oauth/authorize?client_id=" + clientId +
+			"&redirect_uri=" + redirectUri + "&response_type=code";
 	}
 }

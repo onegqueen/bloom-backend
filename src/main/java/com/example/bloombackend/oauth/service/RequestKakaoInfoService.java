@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.example.bloombackend.oauth.client.KaKaoApiClient;
-import com.example.bloombackend.oauth.dto.response.KakaoInfoResponse;
+import com.example.bloombackend.oauth.controller.dto.response.KakaoInfoResponse;
 
 @Component
 public class RequestKakaoInfoService {
@@ -18,5 +18,9 @@ public class RequestKakaoInfoService {
 	public KakaoInfoResponse request(String authorizationCode) {
 		String accessToken = client.requestAccessToken(authorizationCode);
 		return client.requestOauthInfo(accessToken);
+	}
+
+	public String getRedirectUri() {
+		return client.getAuthUrl();
 	}
 }

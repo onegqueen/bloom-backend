@@ -1,4 +1,4 @@
-package com.example.bloombackend.oauth.dto.response;
+package com.example.bloombackend.oauth.controller.dto.response;
 
 import com.example.bloombackend.oauth.OAuthProvider;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

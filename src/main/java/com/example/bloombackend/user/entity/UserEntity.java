@@ -1,59 +1,76 @@
 package com.example.bloombackend.user.entity;
 
+import java.time.LocalDateTime;
 
-import com.example.bloombackend.oauth.OAuthProvider;
-import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
+import com.example.bloombackend.oauth.OAuthProvider;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "user")
 public class UserEntity {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "user_id")
+	private Long id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "provider",nullable = false)
-    private OAuthProvider provider;
+	@Column(name = "sns_id")
+	private String snsId;
 
-    @Column(name="email")
-    private String email;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "provider", nullable = false)
+	private OAuthProvider provider;
 
-    @Column(name="name",nullable = false)
-    private String name;
+	@Column(name = "email")
+	private String email;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name="gender")
-    private Gender gender;
+	@Column(name = "name", nullable = false)
+	private String name;
 
-    @Column(name="age")
-    private int age;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "gender")
+	private Gender gender;
 
-    @CreationTimestamp
-    @Column(name="created_at", updatable = false)
-    private LocalDateTime createdAt;
+	@Column(name = "age")
+	private Integer age;
 
-    @UpdateTimestamp
-    @Column(name="updated_at")
-    private LocalDateTime updatedAt;
+	@CreationTimestamp
+	@Column(name = "created_at", updatable = false)
+	private LocalDateTime createdAt;
 
-    @Builder
-    public UserEntity(OAuthProvider provider, String name) {
-        this.provider = provider;
-        this.name = name;
-    }
+	@UpdateTimestamp
+	@Column(name = "updated_at")
+	private LocalDateTime updatedAt;
 
-    public void updateUserSurveyInfo(String newName, int age, Gender gender, String email) {
-        this.name = newName;
-        this.age = age;
-        this.gender = gender;
-        this.email = email;
-    }
+	@Builder
+	public UserEntity(OAuthProvider provider, String name, String snsId) {
+		this.provider = provider;
+		this.name = name;
+		this.snsId = snsId;
+	}
+
+	public void updateUserSurveyInfo(String newName, int age, Gender gender, String email) {
+		this.name = newName;
+		this.age = age;
+		this.gender = gender;
+		this.email = email;
+	}
+
+	public Long getId() {
+		return id;
+	}
 }

@@ -1,11 +1,26 @@
 spring:
   config:
     import: "optional:application-secret.yml"
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/bloom
+    username: root
+    password: jiwon1923
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect:
+          storage_engine: innodb
+        format_sql: true
+        show_sql: true
+        use_sql_comments: true
 
-kakao:
-  oauth2:
-    client:
-      authorization-uri: https://kauth.kakao.com/oauth/authorize
-      token-uri: https://kauth.kakao.com/oauth/token
-      user-info-uri: https://kapi.kakao.com/v2/user/me
+oauth:
+  kakao:
+    uri:
+      authorization-url: https://kauth.kakao.com/oauth/authorize
+      token-url: https://kauth.kakao.com/oauth/token
+      user-info-url: https://kapi.kakao.com/v2/user/me
       user-name-attribute: id

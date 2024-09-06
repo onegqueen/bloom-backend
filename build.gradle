@@ -24,6 +24,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 
     //SPRING_REST_DOCS
     asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'

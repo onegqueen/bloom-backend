@@ -1,6 +1,7 @@
 package com.example.bloombackend.oauth.service;
 
 import com.example.bloombackend.global.config.JwtTokenProvider;
+import com.example.bloombackend.oauth.controller.dto.response.LoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +21,11 @@ public class OAuthLoginService {
 		this.jwtTokenProvider = jwtTokenProvider;
 	}
 
-	public String login(String authorizationCode) {
+	public LoginResponse login(String authorizationCode) {
 		KakaoInfoResponse response = requestKakaoInfoService.request(authorizationCode);
 		Long userId = userService.findOrCreateUser(response);
-		return jwtTokenProvider.createAccessToken(userId.toString());
+		String accessToken = jwtTokenProvider.createAccessToken(userId.toString());
+		return new LoginResponse(accessToken);
 	}
 
 	public String getKakaoLoginUrl() {

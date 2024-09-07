@@ -1,5 +1,6 @@
 package com.example.bloombackend.oauth.controller;
 
+import com.example.bloombackend.oauth.controller.dto.response.LoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +24,7 @@ public class OAuthController {
 	}
 
 	@PostMapping("/kakao")
-	public ResponseEntity<String> loginKakao(@RequestBody KakaoLoginRequest request) {
+	public ResponseEntity<LoginResponse> loginKakao(@RequestBody KakaoLoginRequest request) {
 		return ResponseEntity.ok(oAuthLoginService.login(request.authorizationCode()));
 	}
 

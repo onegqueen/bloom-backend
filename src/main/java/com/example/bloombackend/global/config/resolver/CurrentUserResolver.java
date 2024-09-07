@@ -26,14 +26,7 @@ public class CurrentUserResolver implements HandlerMethodArgumentResolver {
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        String accessToken = getAccessTokenFrom(webRequest.getHeader("Authorization"));
+        String accessToken = webRequest.getHeader("Authorization");
         return tokenProvider.getUserIdFromToken(accessToken);
-    }
-
-    private String getAccessTokenFrom(String header) {
-        if (header != null && header.startsWith("Authentication ")) {
-            return header.substring(7);
-        }
-        return null;
     }
 }

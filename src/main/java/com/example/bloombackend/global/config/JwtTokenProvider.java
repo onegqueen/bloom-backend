@@ -36,13 +36,15 @@ public class JwtTokenProvider {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String getUserIdFromToken(String token) {
-        return Jwts.parserBuilder()
+    public Long getUserIdFromToken(String token) {
+        return Long.parseLong(
+                Jwts.parserBuilder()
                 .setSigningKey(getSecretKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .getSubject();
+                .getSubject()
+        );
     }
 
     public boolean validateToken(String token) {

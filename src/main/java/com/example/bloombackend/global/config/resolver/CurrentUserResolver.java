@@ -11,10 +11,10 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Component
 public class CurrentUserResolver implements HandlerMethodArgumentResolver {
-    private final JwtTokenProvider tokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public CurrentUserResolver(JwtTokenProvider tokenProvider) {
-        this.tokenProvider = tokenProvider;
+    public CurrentUserResolver(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
@@ -27,6 +27,6 @@ public class CurrentUserResolver implements HandlerMethodArgumentResolver {
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         String accessToken = webRequest.getHeader("Authorization");
-        return tokenProvider.getUserIdFromToken(accessToken);
+        return jwtTokenProvider.getUserIdFromToken(accessToken);
     }
 }

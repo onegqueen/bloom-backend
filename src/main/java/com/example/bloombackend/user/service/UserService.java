@@ -7,6 +7,8 @@ import com.example.bloombackend.oauth.controller.dto.response.KakaoInfoResponse;
 import com.example.bloombackend.user.entity.UserEntity;
 import com.example.bloombackend.user.repository.UserRepository;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class UserService {
 	private final UserRepository userRepository;
@@ -30,5 +32,10 @@ public class UserService {
 			.build();
 
 		return userRepository.save(user).getId();
+	}
+
+	public UserEntity findUserById(Long userId) {
+		return userRepository.findById(userId)
+			.orElseThrow(() -> new EntityNotFoundException("User not fount:" + userId));
 	}
 }

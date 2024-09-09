@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.bloombackend.bottlemsg.controller.dto.request.CreateBottleMessageRequest;
 import com.example.bloombackend.bottlemsg.controller.dto.response.CreateBottleMessageResponse;
 import com.example.bloombackend.bottlemsg.sevice.BottleMessageService;
+import com.example.bloombackend.global.config.annotation.CurrentUser;
 
 @RestController
 @RequestMapping("/api/bottle-messages")
@@ -21,7 +22,8 @@ public class BottleMessageController {
 
 	@PostMapping("")
 	public ResponseEntity<CreateBottleMessageResponse> createBottleMessage(
+		@CurrentUser Long userId,
 		@RequestBody CreateBottleMessageRequest request) {
-		return ResponseEntity.ok(CreateBottleMessageResponse.of(bottleMessageService.createBottleMessage(request)));
+		return ResponseEntity.ok(bottleMessageService.createBottleMessage(userId, request));
 	}
 }

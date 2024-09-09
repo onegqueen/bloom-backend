@@ -8,6 +8,7 @@ import com.example.bloombackend.user.entity.UserEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,11 +28,14 @@ public class BottleMessageEntity {
 	@Column(name = "message_id")
 	private Long id;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private UserEntity senderId;
 
-	@Column(length = 500)
+	@Column(name = "title")
+	private String title;
+
+	@Column(name = "content", length = 500)
 	private String content;
 
 	@Column(name = "postcard_url")
@@ -42,10 +46,14 @@ public class BottleMessageEntity {
 	private LocalDateTime createdAt;
 
 	@Builder
-	public BottleMessageEntity(UserEntity user, String content, String postcardUrl) {
+	public BottleMessageEntity(UserEntity user, String content, String title, String postcardUrl) {
 		this.senderId = user;
 		this.content = content;
+		this.title = title;
 		this.postcardUrl = postcardUrl;
 	}
 
+	public Long getId() {
+		return id;
+	}
 }

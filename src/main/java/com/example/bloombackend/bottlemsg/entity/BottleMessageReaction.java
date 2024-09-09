@@ -8,6 +8,9 @@ import com.example.bloombackend.user.entity.UserEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -20,21 +23,22 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "bottle-message-reaction")
+@Table(name = "bottle_message_reaction")
 public class BottleMessageReaction {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "reaction_id")
 	private Long reactionId;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "reactor_id")
 	private UserEntity reactor;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "message_id")
 	private BottleMessageEntity message;
 
+	@Enumerated(EnumType.STRING)
 	@Column(name = "reaction_type")
 	private ReactionType reactionType;
 

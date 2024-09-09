@@ -8,6 +8,7 @@ import com.example.bloombackend.user.entity.UserEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -20,18 +21,18 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "bottle_message_receipt_log")
+@Table(name = "bottle_msg_receipt_log")
 public class BottleMessageReceiptLog {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "receipt_id")
 	private Long id;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "message_id", nullable = false)
 	private BottleMessageEntity message;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "recipient_id", nullable = false)
 	private UserEntity recipient;
 
@@ -39,16 +40,17 @@ public class BottleMessageReceiptLog {
 	@Column(name = "received_at")
 	private LocalDateTime receivedAt;
 
-	@Column(name = "is_saved", nullable = false, columnDefinition = "BOOLEAN DEFAULT true")
-	private boolean isSaved;
+	@Column(name = "is_saved", nullable = false)
+	private boolean isSaved = true;
 
 	@Builder
 	public BottleMessageReceiptLog(BottleMessageEntity message, UserEntity recipient) {
 		this.message = message;
 		this.recipient = recipient;
+		this.isSaved = true;
 	}
 
-	public void updateSaved(boolean saved) {
-		this.isSaved = saved;
+	public void delete() {
+		this.isSaved = false;
 	}
 }

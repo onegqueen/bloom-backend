@@ -31,4 +31,20 @@ public class BottleMessageRepositoryImpl implements BottleMessageRepositoryCusto
 			))
 			.fetch();
 	}
+
+	@Override
+	public List<BottleMessageEntity> findSavedMessagesByUserId(Long userId) {
+		QBottleMessageEntity bottleMessage = QBottleMessageEntity.bottleMessageEntity;
+		QBottleMessageReceiptLog receiptLog = QBottleMessageReceiptLog.bottleMessageReceiptLog;
+
+		return queryFactory
+			.selectFrom(bottleMessage)
+			.where(bottleMessage.id.in(
+				queryFactory.select(receiptLog.message.id)
+					.from(receiptLog)
+					.where(receiptLog.recipient.id.eq(userId)
+						.and(receiptLog.isSaved.eq(true)))
+			))
+			.fetch();
+	}
 }

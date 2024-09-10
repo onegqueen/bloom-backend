@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import com.example.bloombackend.bottlemsg.controller.dto.request.CreateBottleMes
 import com.example.bloombackend.bottlemsg.controller.dto.response.BottleMessageReactionResponse;
 import com.example.bloombackend.bottlemsg.controller.dto.response.BottleMessageWithReactionResponse;
 import com.example.bloombackend.bottlemsg.controller.dto.response.CreateBottleMessageResponse;
+import com.example.bloombackend.bottlemsg.controller.dto.response.UserBottleMessagesResponse;
 import com.example.bloombackend.bottlemsg.entity.BottleMessageEntity;
 import com.example.bloombackend.bottlemsg.entity.BottleMessageReceiptLog;
 import com.example.bloombackend.bottlemsg.entity.ReactionType;
@@ -85,4 +87,24 @@ public class BottleMessageService {
 
 		return new BottleMessageReactionResponse(likeCount, empathyCount, cheerCount);
 	}
+
+	@Transactional(readOnly = true)
+	public UserBottleMessagesResponse getBottleMessages(Long userId) {
+		List<BottleMessageEntity> savedMessages = bottleMessageRepository.findSavedMessagesByUserId(userId);
+		if (savedMessages.isEmpty()) {
+			throw new NoSuchElementException("No unreceived messages found.");
+		}
+		return new UserBottleMessagesResponse(savedMessages.stream()
+			.map(BottleMessageEntity::toDto)
+			.collect(Collectors.toList()));
+	}
+
+	@Transactional(readOnly = true)
+	public BottleMessageWithReactionResponse getBottleMessage(Long messageId) {
+		BottleMessageEntity message = bottleMessageRepository.findById(messageId)
+			.orElseThrow(() -> new NoSuchElementException("Message with ID " + messageId + " not found."));
+		BottleMessageReactionResponse reaction = getReactionCount(message.getId());
+		return new BottleMessageWithReactionResponse(message.toDto(), reaction);
+	}
+
 }

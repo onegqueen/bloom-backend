@@ -10,12 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.bloombackend.bottlemsg.controller.dto.request.CreateBottleMessageReactionRequest;
 import com.example.bloombackend.bottlemsg.controller.dto.request.CreateBottleMessageRequest;
 import com.example.bloombackend.bottlemsg.controller.dto.response.BottleMessageReactionResponse;
 import com.example.bloombackend.bottlemsg.controller.dto.response.BottleMessageWithReactionResponse;
 import com.example.bloombackend.bottlemsg.controller.dto.response.CreateBottleMessageResponse;
 import com.example.bloombackend.bottlemsg.controller.dto.response.UserBottleMessagesResponse;
 import com.example.bloombackend.bottlemsg.entity.BottleMessageEntity;
+import com.example.bloombackend.bottlemsg.entity.BottleMessageReaction;
 import com.example.bloombackend.bottlemsg.entity.BottleMessageReceiptLog;
 import com.example.bloombackend.bottlemsg.entity.ReactionType;
 import com.example.bloombackend.bottlemsg.repository.BottleMessageLogRepository;
@@ -105,6 +107,20 @@ public class BottleMessageService {
 			.orElseThrow(() -> new NoSuchElementException("Message with ID " + messageId + " not found."));
 		BottleMessageReactionResponse reaction = getReactionCount(message.getId());
 		return new BottleMessageWithReactionResponse(message.toDto(), reaction);
+	}
+
+	@Transactional
+	public BottleMessageReactionResponse updateBottleMessageReaction(Long messageId,
+		CreateBottleMessageReactionRequest request) {
+		ReactionType reactionType = ReactionType.valueOf(request.reaction());
+		BottleMessageEntity message = bottleMessageRepository.findById(messageId)
+			.orElseThrow(() -> new NoSuchElementException("Message with ID " + messageId + " not found."));
+		return getReactionCount(bottleMessageReactionRepository.save(
+			BottleMessageReaction.builder()
+				.message(message)
+				.reactionType(reactionType)
+				.build()
+		).getMessage().getId());
 	}
 
 }

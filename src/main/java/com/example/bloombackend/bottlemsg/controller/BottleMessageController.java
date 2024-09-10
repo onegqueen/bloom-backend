@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.bloombackend.bottlemsg.controller.dto.request.CreateBottleMessageReactionRequest;
 import com.example.bloombackend.bottlemsg.controller.dto.request.CreateBottleMessageRequest;
+import com.example.bloombackend.bottlemsg.controller.dto.response.BottleMessageReactionResponse;
 import com.example.bloombackend.bottlemsg.controller.dto.response.BottleMessageWithReactionResponse;
 import com.example.bloombackend.bottlemsg.controller.dto.response.CreateBottleMessageResponse;
 import com.example.bloombackend.bottlemsg.controller.dto.response.UserBottleMessagesResponse;
@@ -46,4 +48,11 @@ public class BottleMessageController {
 		return ResponseEntity.ok(bottleMessageService.getRandomBottleMessage(userId));
 	}
 
+	@PostMapping("/{messageId}/react")
+	public ResponseEntity<BottleMessageReactionResponse> reactBottleMessage(
+		@CurrentUser Long userId,
+		@RequestBody CreateBottleMessageReactionRequest request,
+		@PathVariable Long messageId) {
+		return ResponseEntity.ok(bottleMessageService.updateBottleMessageReaction(messageId, request));
+	}
 }

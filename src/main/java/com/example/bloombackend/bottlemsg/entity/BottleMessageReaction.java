@@ -52,4 +52,8 @@ public class BottleMessageReaction {
 		this.message = message;
 		this.reactionType = reactionType;
 	}
+
+	public BottleMessageEntity getMessage() {
+		return message;
+	}
 }

@@ -1,7 +1,7 @@
 package com.example.bloombackend.quest.entity;
 
-import com.example.bloombackend.quest.controller.dto.response.QuestDto;
-import com.example.bloombackend.quest.controller.dto.response.UserQuestLogDto;
+import com.example.bloombackend.quest.controller.dto.response.QuestResponse;
+import com.example.bloombackend.quest.controller.dto.response.UserQuestLogResponse;
 import com.example.bloombackend.user.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -37,8 +37,8 @@ public class UserQuestLogEntity {
         this.quest = quest;
     }
 
-    public UserQuestLogDto toDto() {
-        QuestDto questDto = quest.toDto();
-        return new UserQuestLogDto(questDto.id(), questDto.iconUrl(), questDto.title(), questDto.maxCount(), isDone);
+    public UserQuestLogResponse toDto() {
+        QuestResponse questResponse = quest.toDto();
+        return new UserQuestLogResponse(questResponse.id(), questResponse.iconUrl(), questResponse.title(), questResponse.maxCount(), isDone);
     }
 }

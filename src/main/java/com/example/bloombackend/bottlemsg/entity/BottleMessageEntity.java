@@ -33,13 +33,13 @@ public class BottleMessageEntity {
 	@JoinColumn(name = "user_id")
 	private UserEntity sender;
 
-	@Column(name = "title")
+	@Column(name = "title",nullable = false)
 	private String title;
 
-	@Column(name = "content", length = 500)
+	@Column(name = "content", length = 500,,nullable = false)
 	private String content;
 
-	@Column(name = "postcard_url")
+	@Column(name = "postcard_url",nullable = false)
 	private String postcardUrl;
 
 	@CreationTimestamp

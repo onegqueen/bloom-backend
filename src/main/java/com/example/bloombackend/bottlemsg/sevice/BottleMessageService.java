@@ -36,24 +36,22 @@ public class BottleMessageService {
 
 	@Autowired
 	public BottleMessageService(BottleMessageRepository bottleMessageRepository,
-		BottleMessageLogRepository botleMessageLogRepository, UserService userService,
+		BottleMessageLogRepository bottleMessageLogRepository, UserService userService,
 		BottleMessageReactionRepositoryRepository bottleMessageReactionRepository) {
 		this.bottleMessageRepository = bottleMessageRepository;
-		this.bottleMessageLogRepository = botleMessageLogRepository;
+		this.bottleMessageLogRepository = bottleMessageLogRepository;
 		this.userService = userService;
 		this.bottleMessageReactionRepository = bottleMessageReactionRepository;
 	}
 
 	@Transactional
 	public CreateBottleMessageResponse createBottleMessage(Long userId, CreateBottleMessageRequest request) {
-		return CreateBottleMessageResponse.of(bottleMessageRepository.save(
-			BottleMessageEntity.builder()
-				.content(request.content())
-				.user(userService.findUserById(userId))
-				.title(request.title())
-				.postcardUrl(request.postCard())
-				.build()
-		).getId());
+		return CreateBottleMessageResponse.of(bottleMessageRepository.save(BottleMessageEntity.builder()
+			.content(request.content())
+			.user(userService.findUserById(userId))
+			.title(request.title())
+			.postcardUrl(request.postCard())
+			.build()).getId());
 	}
 
 	@Transactional
@@ -65,20 +63,12 @@ public class BottleMessageService {
 	}
 
 	private void createBottleMessageReceiptLog(Long userId, BottleMessageEntity message) {
-		BottleMessageReceiptLog log = BottleMessageReceiptLog.builder()
-			.recipient(userService.findUserById(userId))
-			.message(message)
-			.build();
-		bottleMessageLogRepository.save(log);
+		bottleMessageLogRepository.save(
+			BottleMessageReceiptLog.builder().recipient(userService.findUserById(userId)).message(message).build());
 	}
 
 	private BottleMessageEntity findRandomUnreceivedMessage(Long userId) {
 		List<BottleMessageEntity> unreceivedMessages = bottleMessageRepository.findUnreceivedMessagesByUserId(userId);
-
-		if (unreceivedMessages.isEmpty()) {
-			throw new NoSuchElementException("No unreceived messages found.");
-		}
-
 		return unreceivedMessages.get(new Random().nextInt(unreceivedMessages.size()));
 	}
 
@@ -93,14 +83,10 @@ public class BottleMessageService {
 	}
 
 	@Transactional(readOnly = true)
-	public UserBottleMessagesResponse getBottleMessages(Long userId) {
+	public UserBottleMessagesResponse getUserBottleMessages(Long userId) {
 		List<BottleMessageEntity> savedMessages = bottleMessageRepository.findSavedMessagesByUserId(userId);
-		if (savedMessages.isEmpty()) {
-			throw new NoSuchElementException("No unreceived messages found.");
-		}
-		return new UserBottleMessagesResponse(savedMessages.stream()
-			.map(BottleMessageEntity::toDto)
-			.collect(Collectors.toList()));
+		return new UserBottleMessagesResponse(
+			savedMessages.stream().map(BottleMessageEntity::toDto).collect(Collectors.toList()));
 	}
 
 	@Transactional(readOnly = true)
@@ -116,11 +102,7 @@ public class BottleMessageService {
 		ReactionType reactionType = ReactionType.valueOf(request.reaction());
 		BottleMessageEntity message = getBottleMessageEntity(messageId);
 		return getReactionCount(bottleMessageReactionRepository.save(
-			BottleMessageReaction.builder()
-				.message(message)
-				.reactionType(reactionType)
-				.build()
-		).getMessage().getId());
+			BottleMessageReaction.builder().message(message).reactionType(reactionType).build()).getMessage().getId());
 	}
 
 	@Transactional
@@ -133,12 +115,11 @@ public class BottleMessageService {
 			message.get().delete();
 		}
 
-		return getBottleMessages(userId);
+		return getUserBottleMessages(userId);
 	}
 
 	private BottleMessageEntity getBottleMessageEntity(Long messageId) {
 		return bottleMessageRepository.findById(messageId)
 			.orElseThrow(() -> new NoSuchElementException("Message with ID " + messageId + " not found."));
 	}
-
 }

@@ -35,7 +35,7 @@ public class BottleMessageController {
 
 	@GetMapping("")
 	public ResponseEntity<UserBottleMessagesResponse> getUserBottleMessages(@CurrentUser Long userId) {
-		return ResponseEntity.ok(bottleMessageService.getBottleMessages(userId));
+		return ResponseEntity.ok(bottleMessageService.getUserBottleMessages(userId));
 	}
 
 	@GetMapping("/{messageId}")

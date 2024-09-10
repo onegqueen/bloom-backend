@@ -46,7 +46,7 @@ public class DailyQuestionService {
     }
 
     private Long getNextQuestionId(Optional<DailyQuestionLogEntity> dailyQuestionLog) {
-        return dailyQuestionLog.map(DailyQuestionLogEntity::getQuestion).map(DailyQuestionEntity::getId).orElse(0L);
+        return dailyQuestionLog.map(DailyQuestionLogEntity::getQuestion).map(DailyQuestionEntity::getId).orElse(0L) + 1;
     }
 
     private DailyQuestionEntity registerNewDailyQuestion(Long userId, Long questionId) {

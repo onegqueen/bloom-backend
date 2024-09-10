@@ -55,4 +55,11 @@ public class BottleMessageController {
 		@PathVariable Long messageId) {
 		return ResponseEntity.ok(bottleMessageService.updateBottleMessageReaction(messageId, request));
 	}
+
+	@PostMapping("/{messageId}/delete")
+	public ResponseEntity<UserBottleMessagesResponse> deleteBottleMessage(
+		@CurrentUser Long userId,
+		@PathVariable Long messageId) {
+		return ResponseEntity.ok(bottleMessageService.deleteBottleMessage(userId, messageId));
+	}
 }

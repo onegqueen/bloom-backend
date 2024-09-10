@@ -3,6 +3,7 @@ package com.example.bloombackend.bottlemsg.sevice;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,7 @@ import com.example.bloombackend.bottlemsg.entity.ReactionType;
 import com.example.bloombackend.bottlemsg.repository.BottleMessageLogRepository;
 import com.example.bloombackend.bottlemsg.repository.BottleMessageReactionRepositoryRepository;
 import com.example.bloombackend.bottlemsg.repository.BottleMessageRepository;
+import com.example.bloombackend.user.entity.UserEntity;
 import com.example.bloombackend.user.service.UserService;
 
 @Service
@@ -103,8 +105,7 @@ public class BottleMessageService {
 
 	@Transactional(readOnly = true)
 	public BottleMessageWithReactionResponse getBottleMessage(Long messageId) {
-		BottleMessageEntity message = bottleMessageRepository.findById(messageId)
-			.orElseThrow(() -> new NoSuchElementException("Message with ID " + messageId + " not found."));
+		BottleMessageEntity message = getBottleMessageEntity(messageId);
 		BottleMessageReactionResponse reaction = getReactionCount(message.getId());
 		return new BottleMessageWithReactionResponse(message.toDto(), reaction);
 	}
@@ -113,14 +114,31 @@ public class BottleMessageService {
 	public BottleMessageReactionResponse updateBottleMessageReaction(Long messageId,
 		CreateBottleMessageReactionRequest request) {
 		ReactionType reactionType = ReactionType.valueOf(request.reaction());
-		BottleMessageEntity message = bottleMessageRepository.findById(messageId)
-			.orElseThrow(() -> new NoSuchElementException("Message with ID " + messageId + " not found."));
+		BottleMessageEntity message = getBottleMessageEntity(messageId);
 		return getReactionCount(bottleMessageReactionRepository.save(
 			BottleMessageReaction.builder()
 				.message(message)
 				.reactionType(reactionType)
 				.build()
 		).getMessage().getId());
+	}
+
+	@Transactional
+	public UserBottleMessagesResponse deleteBottleMessage(Long messageId, Long userId) {
+		UserEntity recipient = userService.findUserById(userId);
+		Optional<BottleMessageReceiptLog> message = bottleMessageLogRepository.findByBottleMessageIdAndRecipient(
+			messageId, recipient);
+
+		if (message.isPresent()) {
+			message.get().delete();
+		}
+
+		return getBottleMessages(userId);
+	}
+
+	private BottleMessageEntity getBottleMessageEntity(Long messageId) {
+		return bottleMessageRepository.findById(messageId)
+			.orElseThrow(() -> new NoSuchElementException("Message with ID " + messageId + " not found."));
 	}
 
 }

@@ -22,7 +22,7 @@ import com.example.bloombackend.bottlemsg.entity.BottleMessageReaction;
 import com.example.bloombackend.bottlemsg.entity.BottleMessageReceiptLog;
 import com.example.bloombackend.bottlemsg.entity.ReactionType;
 import com.example.bloombackend.bottlemsg.repository.BottleMessageLogRepository;
-import com.example.bloombackend.bottlemsg.repository.BottleMessageReactionRepositoryRepository;
+import com.example.bloombackend.bottlemsg.repository.BottleMessageReactionRepository;
 import com.example.bloombackend.bottlemsg.repository.BottleMessageRepository;
 import com.example.bloombackend.user.entity.UserEntity;
 import com.example.bloombackend.user.service.UserService;
@@ -32,12 +32,12 @@ public class BottleMessageService {
 	private final BottleMessageRepository bottleMessageRepository;
 	private final BottleMessageLogRepository bottleMessageLogRepository;
 	private final UserService userService;
-	private final BottleMessageReactionRepositoryRepository bottleMessageReactionRepository;
+	private final BottleMessageReactionRepository bottleMessageReactionRepository;
 
 	@Autowired
 	public BottleMessageService(BottleMessageRepository bottleMessageRepository,
 		BottleMessageLogRepository bottleMessageLogRepository, UserService userService,
-		BottleMessageReactionRepositoryRepository bottleMessageReactionRepository) {
+		BottleMessageReactionRepository bottleMessageReactionRepository) {
 		this.bottleMessageRepository = bottleMessageRepository;
 		this.bottleMessageLogRepository = bottleMessageLogRepository;
 		this.userService = userService;

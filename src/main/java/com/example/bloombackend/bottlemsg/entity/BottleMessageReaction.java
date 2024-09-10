@@ -28,10 +28,10 @@ public class BottleMessageReaction {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "reaction_id")
-	private Long reactionId;
+	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "reactor_id")
+	@JoinColumn(name = "user_id")
 	private UserEntity reactor;
 
 	@ManyToOne(fetch = FetchType.LAZY)

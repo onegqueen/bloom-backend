@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.example.bloombackend.bottlemsg.controller.dto.response.BottleMessageResponse;
 import com.example.bloombackend.user.entity.UserEntity;
 
 import jakarta.persistence.Column;
@@ -30,7 +31,7 @@ public class BottleMessageEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
-	private UserEntity senderId;
+	private UserEntity sender;
 
 	@Column(name = "title")
 	private String title;
@@ -47,7 +48,7 @@ public class BottleMessageEntity {
 
 	@Builder
 	public BottleMessageEntity(UserEntity user, String content, String title, String postcardUrl) {
-		this.senderId = user;
+		this.sender = user;
 		this.content = content;
 		this.title = title;
 		this.postcardUrl = postcardUrl;
@@ -55,5 +56,14 @@ public class BottleMessageEntity {
 
 	public Long getId() {
 		return id;
+	}
+
+	public BottleMessageResponse toDto() {
+		return BottleMessageResponse.builder()
+			.messageId(id)
+			.content(content)
+			.title(title)
+			.postCardUrl(postcardUrl)
+			.build();
 	}
 }

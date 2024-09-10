@@ -1,0 +1,54 @@
+= API 문서
+BloomBackend Team
+2024-08-27
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+== 오늘의 질문 API
+
+=== 1. 오늘의 질문 조회 API
+
+==== HTTP request
+
+include::{snippets}/daily-question/get-daily-question/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/daily-question/get-daily-question/http-response.adoc[]
+
+==== response body
+
+include::{snippets}/daily-question/get-daily-question/response-fields.adoc[]
+
+=== 2. 특정 날짜의 오늘의 질문 답변 조회 API
+
+==== HTTP request
+
+include::{snippets}/daily-question/get-daily-question-answer/http-request.adoc[]
+
+==== request parameters
+
+include::{snippets}/daily-question/get-daily-question-answer/query-parameters.adoc[]
+
+==== HTTP response
+
+include::{snippets}/daily-question/get-daily-question-answer/http-response.adoc[]
+
+==== response body
+
+include::{snippets}/daily-question/get-daily-question-answer/response-fields.adoc[]
+
+=== 3. 오늘의 질문 답변 수정 API
+
+==== HTTP request
+
+include::{snippets}/daily-question/update-daily-question-answer/http-request.adoc[]
+
+==== request body
+
+include::{snippets}/daily-question/update-daily-question-answer/request-fields.adoc[]
+
+==== HTTP response
+
+include::{snippets}/daily-question/update-daily-question-answer/http-response.adoc[]

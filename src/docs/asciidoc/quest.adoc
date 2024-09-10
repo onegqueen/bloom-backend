@@ -1,0 +1,63 @@
+= API 문서
+BloomBackend Team
+2024-08-27
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+== 퀘스트 API
+
+=== 1. 사용 가능한 퀘스트 목록 조회 API
+
+==== HTTP request
+
+include::{snippets}/quest/get-available-quests/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/quest/get-available-quests/http-response.adoc[]
+
+==== response body
+
+include::{snippets}/quest/get-available-quests/response-fields.adoc[]
+
+
+=== 2. 오늘의 퀘스트 등록 API
+
+==== HTTP request
+
+include::{snippets}/quest/register-today-quests/http-request.adoc[]
+
+==== request body
+
+include::{snippets}/quest/register-today-quests/request-fields.adoc[]
+
+==== HTTP response
+
+include::{snippets}/quest/register-today-quests/http-response.adoc[]
+
+
+=== 3. 사용자가 등록한 오늘의 퀘스트 목록 조회 API
+
+==== HTTP request
+
+include::{snippets}/quest/get-registered-today-quests/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/quest/get-registered-today-quests/http-response.adoc[]
+
+==== response body
+
+include::{snippets}/quest/get-registered-today-quests/response-fields.adoc[]
+
+
+=== 4. 퀘스트 등록 해제 API
+
+==== HTTP request
+
+include::{snippets}/quest/unregister-quests/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/quest/unregister-quests/http-response.adoc[]

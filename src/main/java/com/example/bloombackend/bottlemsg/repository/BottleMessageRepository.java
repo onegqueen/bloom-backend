@@ -1,10 +1,10 @@
 package com.example.bloombackend.bottlemsg.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import com.example.bloombackend.bottlemsg.entity.BottleMessageEntity;
+import com.example.bloombackend.bottlemsg.repository.querydsl.BottleMessageRepositoryCustom;
 
-@Repository
-public interface BottleMessageRepository extends JpaRepository<BottleMessageEntity, Long> {
+public interface BottleMessageRepository
+	extends JpaRepository<BottleMessageEntity, Long>, BottleMessageRepositoryCustom {
 }

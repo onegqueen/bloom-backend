@@ -1,13 +1,14 @@
 package com.example.bloombackend.oauth.controller;
 
-import com.example.bloombackend.oauth.controller.dto.response.LoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.bloombackend.oauth.controller.dto.request.KakaoLoginRequest;
+import com.example.bloombackend.oauth.controller.dto.response.LoginResponse;
 import com.example.bloombackend.oauth.service.OAuthLoginService;
 
 @RestController
@@ -20,9 +21,9 @@ public class OAuthController {
 		this.oAuthLoginService = oAuthLoginService;
 	}
 
-	@GetMapping("/oauth/kakao")
-	public ResponseEntity<String> loginKakao(@RequestParam String code) {
-		return ResponseEntity.ok(oAuthLoginService.login(code));
+	@GetMapping("/kakao")
+	public ResponseEntity<LoginResponse> loginKakao(@RequestBody KakaoLoginRequest request) {
+		return ResponseEntity.ok(oAuthLoginService.login(request.authorizationCode()));
 	}
 
 	@GetMapping("/kakao/login")

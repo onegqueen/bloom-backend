@@ -92,17 +92,19 @@ public class BottleMessageService {
 	@Transactional(readOnly = true)
 	public BottleMessageWithReactionResponse getBottleMessage(Long messageId) {
 		BottleMessageEntity message = getBottleMessageEntity(messageId);
-		BottleMessageReactionResponse reaction = getReactionCount(message.getId());
+		BottleMessageReactionResponse reaction = getReactionCount(messageId);
 		return new BottleMessageWithReactionResponse(message.toDto(), reaction);
 	}
 
 	@Transactional
 	public BottleMessageReactionResponse updateBottleMessageReaction(Long messageId,
 		CreateBottleMessageReactionRequest request) {
-		ReactionType reactionType = ReactionType.valueOf(request.reaction());
-		BottleMessageEntity message = getBottleMessageEntity(messageId);
-		return getReactionCount(bottleMessageReactionRepository.save(
-			BottleMessageReaction.builder().message(message).reactionType(reactionType).build()).getMessage().getId());
+		bottleMessageReactionRepository.save(
+			BottleMessageReaction.builder()
+				.message(getBottleMessageEntity(messageId))
+				.reactionType(ReactionType.valueOf(request.reaction()))
+				.build());
+		return getReactionCount(messageId);
 	}
 
 	@Transactional

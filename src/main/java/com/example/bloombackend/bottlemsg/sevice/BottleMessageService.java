@@ -106,9 +106,9 @@ public class BottleMessageService {
 	}
 
 	@Transactional
-	public UserBottleMessagesResponse deleteBottleMessage(Long messageId, Long userId) {
+	public UserBottleMessagesResponse deleteBottleMessage(Long userId, Long messageId) {
 		UserEntity recipient = userService.findUserById(userId);
-		Optional<BottleMessageReceiptLog> message = bottleMessageLogRepository.findByBottleMessageIdAndRecipient(
+		Optional<BottleMessageReceiptLog> message = bottleMessageLogRepository.findByMessageIdAndRecipient(
 			messageId, recipient);
 
 		if (message.isPresent()) {

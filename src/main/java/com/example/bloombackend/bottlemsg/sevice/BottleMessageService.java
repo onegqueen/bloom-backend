@@ -124,4 +124,11 @@ public class BottleMessageService {
 		return bottleMessageRepository.findById(messageId)
 			.orElseThrow(() -> new NoSuchElementException("Message with ID " + messageId + " not found."));
 	}
+
+	@Transactional(readOnly = true)
+	public UserBottleMessagesResponse getSentBottleMessages(Long userId) {
+		List<BottleMessageEntity> sentMessages = bottleMessageRepository.findBySenderId(userId);
+		return new UserBottleMessagesResponse(
+			sentMessages.stream().map(BottleMessageEntity::toDto).collect(Collectors.toList()));
+	}
 }

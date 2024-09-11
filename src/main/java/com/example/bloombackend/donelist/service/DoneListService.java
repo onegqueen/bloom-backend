@@ -8,6 +8,8 @@ import com.example.bloombackend.donelist.controller.dto.response.DoneItemDetailR
 import com.example.bloombackend.donelist.entity.DoneList;
 import com.example.bloombackend.donelist.repository.DoneListRepository;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class DoneListService {
 	private final DoneListRepository doneListRepository;
@@ -26,6 +28,16 @@ public class DoneListService {
 				.photoUrl(request.photoUrl())
 				.content(request.content()).build()
 		).toDto();
+	}
+
+	@Transactional(readOnly = true)
+	public DoneItemDetailResponse getDoneItem(Long userId, Long itemId) {
+		return getDoneList(itemId).toDto();
+	}
+
+	private DoneList getDoneList(Long itemId) {
+		return doneListRepository.findById(itemId)
+			.orElseThrow(() -> new EntityNotFoundException("User not found: " + itemId));
 	}
 
 }

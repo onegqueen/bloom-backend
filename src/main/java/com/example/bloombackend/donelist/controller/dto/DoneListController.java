@@ -1,6 +1,8 @@
 package com.example.bloombackend.donelist.controller.dto;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,5 +27,12 @@ public class DoneListController {
 		@CurrentUser Long userId,
 		@RequestBody CreateDoneItemRequest request) {
 		return ResponseEntity.ok(doneListService.createDoneItem(userId, request));
+	}
+
+	@GetMapping("/{itemId}")
+	public ResponseEntity<DoneItemDetailResponse> getDoneItem(
+		@CurrentUser Long userId,
+		@PathVariable Long itemId) {
+		return ResponseEntity.ok(doneListService.getDoneItem(userId, itemId));
 	}
 }

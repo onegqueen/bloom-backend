@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.bloombackend.donelist.controller.dto.request.CreateDoneItemRequest;
 import com.example.bloombackend.donelist.controller.dto.response.DoneItemDetailResponse;
+import com.example.bloombackend.donelist.controller.dto.response.DoneListResponse;
 import com.example.bloombackend.donelist.service.DoneListService;
 import com.example.bloombackend.global.config.annotation.CurrentUser;
 
@@ -34,5 +35,13 @@ public class DoneListController {
 		@CurrentUser Long userId,
 		@PathVariable Long itemId) {
 		return ResponseEntity.ok(doneListService.getDoneItem(userId, itemId));
+	}
+
+	@GetMapping("/{date}")
+	public ResponseEntity<DoneListResponse> getDoneItemByDate(
+		@CurrentUser Long userId,
+		@PathVariable String date
+	) {
+		return ResponseEntity.ok(doneListService.getDoneListByDate(userId, date));
 	}
 }

@@ -3,6 +3,7 @@ package com.example.bloombackend.donelist.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import com.example.bloombackend.donelist.controller.dto.request.CreateDoneItemRe
 import com.example.bloombackend.donelist.controller.dto.response.DoneItemDetailResponse;
 import com.example.bloombackend.donelist.controller.dto.response.DoneItemPhotoResponse;
 import com.example.bloombackend.donelist.controller.dto.response.DoneItemResponse;
+import com.example.bloombackend.donelist.controller.dto.response.DoneListResponse;
 import com.example.bloombackend.donelist.entity.DoneList;
 import com.example.bloombackend.donelist.entity.Photo;
 import com.example.bloombackend.donelist.repository.DoneListRepository;
@@ -81,6 +83,20 @@ public class DoneListService {
 		return photoRepository.findByDoneListId(itemId);
 	}
 
+	@Transactional(readOnly = true)
+	public DoneListResponse getDoneListByDate(Long userId, String date) {
+		Map<String, LocalDateTime> startAndEndOfDay = getStartAndEndOfDay(StringToDate(date));
+		List<DoneList> doneLists = doneListRepository.findByUserIdAndCreatedAtBetween(userId,
+			startAndEndOfDay.get("start"), startAndEndOfDay.get("end"));
+		return new DoneListResponse(date, doneItemResponses(doneLists));
+	}
+
+	private List<DoneItemResponse> doneItemResponses(List<DoneList> doneLists) {
+		return doneLists.stream()
+			.map(DoneList::toDto)
+			.collect(Collectors.toList());
+	}
+
 	private Map<String, LocalDateTime> getStartAndEndOfDay(LocalDate date) {
 		Map<String, LocalDateTime> startAndEndOfDay = new HashMap<>();
 		LocalDateTime start = LocalDateTime.of(date, LocalTime.of(0, 0, 0));
@@ -92,4 +108,8 @@ public class DoneListService {
 		return startAndEndOfDay;
 	}
 
+	private LocalDate StringToDate(String date) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		return LocalDate.parse(date, formatter);
+	}
 }

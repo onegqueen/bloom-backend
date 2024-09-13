@@ -1,5 +1,6 @@
 package com.example.bloombackend.donelist.service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.bloombackend.donelist.controller.dto.request.CreateDoneItemRequest;
 import com.example.bloombackend.donelist.controller.dto.request.UpdateDoneItemRequest;
@@ -22,6 +24,7 @@ import com.example.bloombackend.donelist.entity.DoneList;
 import com.example.bloombackend.donelist.entity.Photo;
 import com.example.bloombackend.donelist.repository.DoneListRepository;
 import com.example.bloombackend.donelist.repository.PhotoRepository;
+import com.example.bloombackend.global.S3.S3Uploader;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -29,10 +32,13 @@ import jakarta.persistence.EntityNotFoundException;
 public class DoneListService {
 	private final DoneListRepository doneListRepository;
 	private final PhotoRepository photoRepository;
+	private final S3Uploader s3Uploader;
 
-	public DoneListService(DoneListRepository doneListRepository, PhotoRepository photoRepository) {
+	public DoneListService(DoneListRepository doneListRepository, PhotoRepository photoRepository,
+		S3Uploader s3Uploader) {
 		this.doneListRepository = doneListRepository;
 		this.photoRepository = photoRepository;
+		this.s3Uploader = s3Uploader;
 	}
 
 	@Transactional
@@ -52,11 +58,19 @@ public class DoneListService {
 		).toDto();
 	}
 
-	private List<DoneItemPhotoResponse> createDoneItemPhoto(Long doneListId, List<String> photoFiles) {
+	private List<DoneItemPhotoResponse> createDoneItemPhoto(Long doneListId, List<MultipartFile> photoFiles) {
 		List<Photo> photos = photoFiles.stream()
-			.map(photoFile -> new Photo(photoFile, doneListId))
+			.map(photoFile -> new Photo(uploadPhoto(photoFile), doneListId))
 			.collect(Collectors.toList());
 		return getPhotoResponses(photoRepository.saveAll(photos));
+	}
+
+	private String uploadPhoto(MultipartFile file) {
+		try {
+			return s3Uploader.upload(file);
+		} catch (IOException e) {
+			throw new RuntimeException("Failed to upload photo", e);
+		}
 	}
 
 	private List<DoneItemPhotoResponse> getPhotoResponses(List<Photo> photos) {

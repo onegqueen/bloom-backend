@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -19,6 +20,7 @@ public class Photo {
 	@Id
 	@GeneratedValue
 	@Column(name = "done_list_id")
+	@Getter
 	private Long id;
 
 	@Column(name = "photo_url")

@@ -132,6 +132,17 @@ public class DoneListService {
 		return getDoneItem(request.itemId());
 	}
 
+	@Transactional
+	public void deleteDoneItem(Long itemId) {
+		deleteDoneItemContent(itemId);
+		deletePhotoEntities(getPhotosEntity(itemId).stream()
+			.map(Photo::getId).toList());
+	}
+
+	private void deleteDoneItemContent(Long itemId) {
+		doneListRepository.deleteById(itemId);
+	}
+
 	private void deletePhotoEntities(List<Long> photoIds) {
 		photoRepository.deleteAllById(photoIds);
 	}

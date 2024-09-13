@@ -32,8 +32,8 @@ public class DoneListController {
 	@PostMapping
 	public ResponseEntity<DoneItemDetailResponse> createDoneItem(
 		@CurrentUser Long userId,
-		@RequestPart CreateDoneItemRequest request,
-		@RequestPart List<MultipartFile> photos) {
+		@RequestPart("data") CreateDoneItemRequest request,
+		@RequestPart("files") List<MultipartFile> photos) {
 		return ResponseEntity.ok(doneListService.createDoneItem(userId, request, photos));
 	}
 
@@ -55,10 +55,11 @@ public class DoneListController {
 	@PutMapping("/{itemId}")
 	public ResponseEntity<DoneItemDetailResponse> updateDoneItem(
 		@CurrentUser Long userId,
-		@RequestPart UpdateDoneItemRequest request,
-		@RequestPart List<MultipartFile> updatedPhotoFiles
+		@PathVariable Long itemId,
+		@RequestPart("data") UpdateDoneItemRequest request,
+		@RequestPart("files") List<MultipartFile> updatedPhotoFiles
 	) {
-		return ResponseEntity.ok(doneListService.updateDoneItem(request, updatedPhotoFiles));
+		return ResponseEntity.ok(doneListService.updateDoneItem(itemId, request, updatedPhotoFiles));
 	}
 
 	@DeleteMapping("/{itemId}")

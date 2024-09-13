@@ -9,6 +9,7 @@ import com.example.bloombackend.donelist.controller.dto.response.DoneItemRespons
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -20,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "done_list")
 public class DoneList {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "done_list_id")
 	private Long id;
 
@@ -50,6 +51,7 @@ public class DoneList {
 
 	public DoneItemResponse toDto() {
 		return DoneItemResponse.builder()
+			.itemId(id)
 			.content(content)
 			.title(title)
 			.iconUrl(iconUrl)

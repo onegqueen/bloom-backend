@@ -5,6 +5,7 @@ import com.example.bloombackend.donelist.controller.dto.response.DoneItemPhotoRe
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
@@ -18,8 +19,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "done_list_photo")
 public class Photo {
 	@Id
-	@GeneratedValue
-	@Column(name = "done_list_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "photo_id")
 	@Getter
 	private Long id;
 
@@ -36,6 +37,6 @@ public class Photo {
 	}
 
 	public DoneItemPhotoResponse toDto() {
-		return new DoneItemPhotoResponse(doneListId, photoUrl);
+		return new DoneItemPhotoResponse(id, photoUrl);
 	}
 }

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 public record UpdateDoneItemRequest(
-	Long itemId,
 	Optional<String> iconUrl,
 	Optional<String> title,
 	Optional<String> content,

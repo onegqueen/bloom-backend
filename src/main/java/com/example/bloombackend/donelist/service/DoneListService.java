@@ -92,7 +92,7 @@ public class DoneListService {
 
 	private DoneList getDoneListEntity(Long itemId) {
 		return doneListRepository.findById(itemId)
-			.orElseThrow(() -> new EntityNotFoundException("User not found: " + itemId));
+			.orElseThrow(() -> new EntityNotFoundException("donelist item not found: " + itemId));
 	}
 
 	private List<Photo> getPhotosEntity(Long itemId) {
@@ -130,8 +130,9 @@ public class DoneListService {
 	}
 
 	@Transactional
-	public DoneItemDetailResponse updateDoneItem(UpdateDoneItemRequest request, List<MultipartFile> updatedPhotoFiles) {
-		DoneList doneList = getDoneListEntity(request.itemId());
+	public DoneItemDetailResponse updateDoneItem(Long itemId, UpdateDoneItemRequest request,
+		List<MultipartFile> updatedPhotoFiles) {
+		DoneList doneList = getDoneListEntity(itemId);
 
 		request.title().ifPresent(doneList::updateTitle);
 		request.content().ifPresent(doneList::updateContent);
@@ -140,11 +141,11 @@ public class DoneListService {
 			deletePhotoEntities(request.deletedPhotoIds());
 		}
 
-		if (updatedPhotoFiles != null && !updatedPhotoFiles.isEmpty()) {
-			createDoneItemPhoto(request.itemId(), updatedPhotoFiles);
+		if (updatedPhotoFiles != null && updatedPhotoFiles.stream().anyMatch(file -> !file.isEmpty())) {
+			createDoneItemPhoto(itemId, updatedPhotoFiles);
 		}
 
-		return getDoneItem(request.itemId());
+		return getDoneItem(itemId);
 	}
 
 	@Transactional

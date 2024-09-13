@@ -47,11 +47,11 @@ public class DoneListController {
 	}
 
 	@PostMapping("/{itemId}")
-	public DoneItemDetailResponse updateDoneItem(
+	public ResponseEntity<DoneItemDetailResponse> updateDoneItem(
 		@CurrentUser Long userId,
 		@RequestBody UpdateDoneItemRequest request
 	) {
-		return doneListService.updateDoneItem(request);
+		return ResponseEntity.ok(doneListService.updateDoneItem(request));
 	}
 
 }

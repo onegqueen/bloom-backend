@@ -118,12 +118,8 @@ public class DoneListService {
 	public DoneItemDetailResponse updateDoneItem(UpdateDoneItemRequest request) {
 		DoneList doneList = getDoneListEntity(request.itemId());
 
-		if (request.title().isPresent() && request.content().isPresent()) {
-			doneList.updateContent(request.title().get(), request.content().get());
-		} else {
-			request.title().ifPresent(doneList::updateTitle);
-			request.content().ifPresent(doneList::updateContent);
-		}
+		request.title().ifPresent(doneList::updateTitle);
+		request.content().ifPresent(doneList::updateContent);
 
 		if (!request.deletedPhotoIds().isEmpty()) {
 			deletePhotoEntities(request.deletedPhotoIds());

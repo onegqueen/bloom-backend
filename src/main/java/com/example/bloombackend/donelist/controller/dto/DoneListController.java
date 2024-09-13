@@ -1,14 +1,17 @@
 package com.example.bloombackend.donelist.controller.dto;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.bloombackend.donelist.controller.dto.request.CreateDoneItemRequest;
 import com.example.bloombackend.donelist.controller.dto.request.UpdateDoneItemRequest;
@@ -29,8 +32,9 @@ public class DoneListController {
 	@PostMapping
 	public ResponseEntity<DoneItemDetailResponse> createDoneItem(
 		@CurrentUser Long userId,
-		@RequestBody CreateDoneItemRequest request) {
-		return ResponseEntity.ok(doneListService.createDoneItem(userId, request));
+		@RequestPart CreateDoneItemRequest request,
+		@RequestPart List<MultipartFile> photos) {
+		return ResponseEntity.ok(doneListService.createDoneItem(userId, request, photos));
 	}
 
 	@GetMapping("/detail/{itemId}")
@@ -51,9 +55,10 @@ public class DoneListController {
 	@PutMapping("/{itemId}")
 	public ResponseEntity<DoneItemDetailResponse> updateDoneItem(
 		@CurrentUser Long userId,
-		@RequestBody UpdateDoneItemRequest request
+		@RequestPart UpdateDoneItemRequest request,
+		@RequestPart List<MultipartFile> updatedPhotoFiles
 	) {
-		return ResponseEntity.ok(doneListService.updateDoneItem(request));
+		return ResponseEntity.ok(doneListService.updateDoneItem(request, updatedPhotoFiles));
 	}
 
 	@DeleteMapping("/{itemId}")

@@ -42,9 +42,10 @@ public class DoneListService {
 	}
 
 	@Transactional
-	public DoneItemDetailResponse createDoneItem(Long userId, CreateDoneItemRequest request) {
+	public DoneItemDetailResponse createDoneItem(Long userId, CreateDoneItemRequest request,
+		List<MultipartFile> photoFiles) {
 		DoneItemResponse content = createDoneItemContent(userId, request);
-		List<DoneItemPhotoResponse> photos = createDoneItemPhoto(content.itemId(), request.photos());
+		List<DoneItemPhotoResponse> photos = createDoneItemPhoto(content.itemId(), photoFiles);
 		return new DoneItemDetailResponse(content, photos);
 	}
 
@@ -129,7 +130,7 @@ public class DoneListService {
 	}
 
 	@Transactional
-	public DoneItemDetailResponse updateDoneItem(UpdateDoneItemRequest request) {
+	public DoneItemDetailResponse updateDoneItem(UpdateDoneItemRequest request, List<MultipartFile> updatedPhotoFiles) {
 		DoneList doneList = getDoneListEntity(request.itemId());
 
 		request.title().ifPresent(doneList::updateTitle);
@@ -139,8 +140,8 @@ public class DoneListService {
 			deletePhotoEntities(request.deletedPhotoIds());
 		}
 
-		if (!request.updatedPhotoFiles().isEmpty()) {
-			createDoneItemPhoto(request.itemId(), request.updatedPhotoFiles());
+		if (updatedPhotoFiles != null && !updatedPhotoFiles.isEmpty()) {
+			createDoneItemPhoto(request.itemId(), updatedPhotoFiles);
 		}
 
 		return getDoneItem(request.itemId());

@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.example.bloombackend.donelist.controller.dto.response.DoneItemDetailResponse;
+import com.example.bloombackend.donelist.controller.dto.response.DoneItemResponse;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,9 +33,6 @@ public class DoneList {
 	@Column(name = "icon_url")
 	private String iconUrl;
 
-	@Column(name = "photo_url")
-	private String photoUrl;
-
 	@Column(name = "user_id")
 	private Long userId;
 
@@ -46,18 +43,17 @@ public class DoneList {
 	@Builder
 	public DoneList(String content, String photoUrl, String title, String iconUrl, Long userId) {
 		this.content = content;
-		this.photoUrl = photoUrl;
 		this.title = title;
 		this.iconUrl = iconUrl;
 		this.userId = userId;
 	}
 
-	public DoneItemDetailResponse toDto() {
-		return DoneItemDetailResponse.builder()
+	public DoneItemResponse toDto() {
+		return DoneItemResponse.builder()
 			.content(content)
 			.title(title)
 			.iconUrl(iconUrl)
-			.photoUrl(photoUrl)
 			.build();
 	}
+
 }

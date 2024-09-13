@@ -1,13 +1,9 @@
 package com.example.bloombackend.donelist.controller.dto.response;
 
-import lombok.Builder;
+import java.util.List;
 
-@Builder
 public record DoneItemDetailResponse(
-	Long itemId,
-	String iconUrl,
-	String title,
-	String content,
-	String photoUrl
+	DoneItemResponse doneItem,
+	List<DoneItemPhotoResponse> photoUrls
 ) {
 }

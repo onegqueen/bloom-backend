@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.bloombackend.donelist.controller.dto.request.CreateDoneItemRequest;
+import com.example.bloombackend.donelist.controller.dto.request.UpdateDoneItemRequest;
 import com.example.bloombackend.donelist.controller.dto.response.DoneItemDetailResponse;
 import com.example.bloombackend.donelist.controller.dto.response.DoneItemPhotoResponse;
 import com.example.bloombackend.donelist.controller.dto.response.DoneItemResponse;
@@ -65,7 +66,7 @@ public class DoneListService {
 	}
 
 	@Transactional(readOnly = true)
-	public DoneItemDetailResponse getDoneItem(Long userId, Long itemId) {
+	public DoneItemDetailResponse getDoneItem(Long itemId) {
 		DoneItemResponse doneitem = getDoneListEntity(itemId).toDto();
 		List<DoneItemPhotoResponse> photos = getPhotosEntity(itemId).stream()
 			.map(Photo::toDto)
@@ -85,7 +86,7 @@ public class DoneListService {
 
 	@Transactional(readOnly = true)
 	public DoneListResponse getDoneListByDate(Long userId, String date) {
-		Map<String, LocalDateTime> startAndEndOfDay = getStartAndEndOfDay(StringToDate(date));
+		Map<String, LocalDateTime> startAndEndOfDay = getStartAndEndOfDay(stringToDate(date));
 		List<DoneList> doneLists = doneListRepository.findByUserIdAndCreatedAtBetween(userId,
 			startAndEndOfDay.get("start"), startAndEndOfDay.get("end"));
 		return new DoneListResponse(date, doneItemResponses(doneLists));
@@ -108,8 +109,35 @@ public class DoneListService {
 		return startAndEndOfDay;
 	}
 
-	private LocalDate StringToDate(String date) {
+	private LocalDate stringToDate(String date) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		return LocalDate.parse(date, formatter);
 	}
+
+	@Transactional
+	public DoneItemDetailResponse updateDoneItem(UpdateDoneItemRequest request) {
+		DoneList doneList = getDoneListEntity(request.itemId());
+
+		if (request.title().isPresent() && request.content().isPresent()) {
+			doneList.updateContent(request.title().get(), request.content().get());
+		} else {
+			request.title().ifPresent(doneList::updateTitle);
+			request.content().ifPresent(doneList::updateContent);
+		}
+
+		if (!request.deletedPhotoIds().isEmpty()) {
+			deletePhotoEntities(request.deletedPhotoIds());
+		}
+
+		if (!request.updatedPhotoFiles().isEmpty()) {
+			createDoneItemPhoto(request.itemId(), request.updatedPhotoFiles());
+		}
+
+		return getDoneItem(request.itemId());
+	}
+
+	private void deletePhotoEntities(List<Long> photoIds) {
+		photoRepository.deleteAllById(photoIds);
+	}
+
 }

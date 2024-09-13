@@ -56,4 +56,17 @@ public class DoneList {
 			.build();
 	}
 
+	public void updateContent(String title, String content) {
+		this.content = content;
+		this.title = title;
+	}
+
+	public void updateContent(String content) {
+		this.content = content;
+	}
+
+	public void updateTitle(String title) {
+		this.title = title;
+	}
+
 }

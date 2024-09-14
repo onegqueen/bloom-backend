@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "bottle-message")
+@Table(name = "bottle_message")
 public class BottleMessageEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

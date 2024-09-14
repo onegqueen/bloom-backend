@@ -18,7 +18,7 @@ public class OAuthController {
 		this.oAuthLoginService = oAuthLoginService;
 	}
 
-	@GetMapping("/oauth/kakao")
+	@PostMapping("/kakao")
 	public ResponseEntity<LoginResponse> loginKakao(@RequestBody KakaoLoginRequest request) {
 		return ResponseEntity.ok(oAuthLoginService.login(request.authorizationCode()));
 	}

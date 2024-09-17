@@ -1,5 +1,8 @@
 package com.example.bloombackend.bottlemsg.sevice;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -7,16 +10,13 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import com.example.bloombackend.bottlemsg.controller.dto.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.bloombackend.bottlemsg.controller.dto.request.CreateBottleMessageReactionRequest;
 import com.example.bloombackend.bottlemsg.controller.dto.request.CreateBottleMessageRequest;
-import com.example.bloombackend.bottlemsg.controller.dto.response.BottleMessageReactionResponse;
-import com.example.bloombackend.bottlemsg.controller.dto.response.BottleMessageWithReactionResponse;
-import com.example.bloombackend.bottlemsg.controller.dto.response.CreateBottleMessageResponse;
-import com.example.bloombackend.bottlemsg.controller.dto.response.UserBottleMessagesResponse;
 import com.example.bloombackend.bottlemsg.entity.BottleMessageEntity;
 import com.example.bloombackend.bottlemsg.entity.BottleMessageReaction;
 import com.example.bloombackend.bottlemsg.entity.BottleMessageReceiptLog;
@@ -57,9 +57,8 @@ public class BottleMessageService {
     @Transactional
     public BottleMessageWithReactionResponse getRandomBottleMessage(Long userId) {
         BottleMessageEntity message = findRandomUnreceivedMessage(userId);
-        BottleMessageReactionResponse reaction = getReactionCount(message.getId(),isReacted(userId));
         createBottleMessageReceiptLog(userId, message);
-        return new BottleMessageWithReactionResponse(message.toDto(), reaction);
+        return getBottleMessage(message.getId(),userId);
     }
 
     private boolean isReacted(Long userId) {
@@ -95,9 +94,22 @@ public class BottleMessageService {
 
     @Transactional(readOnly = true)
     public BottleMessageWithReactionResponse getBottleMessage(Long messageId,Long userId) {
+        BottleMessageLogResponse log = getDateLog(messageId,userId);
         BottleMessageEntity message = getBottleMessageEntity(messageId);
         BottleMessageReactionResponse reaction = getReactionCount(messageId,isReacted(userId));
-        return new BottleMessageWithReactionResponse(message.toDto(), reaction);
+        return new BottleMessageWithReactionResponse(log,message.toDto(), reaction);
+    }
+
+    private BottleMessageLogResponse getDateLog(Long messageId,Long userId){
+        BottleMessageReceiptLog log = bottleMessageLogRepository.findByMessageIdAndRecipient(messageId,userId).get();
+        BottleMessageEntity message = getBottleMessageEntity(messageId);
+        return new BottleMessageLogResponse(localDateToString(log.getReceivedAt(),"yyyy-MM-dd HH:mm:ss"),
+                localDateToString(message.getCreatedAt(),"yyyy-MM-dd HH:mm:ss"));
+    }
+
+    private String localDateToString(LocalDateTime date, String format) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+        return date.format(formatter);
     }
 
     @Transactional
@@ -115,9 +127,8 @@ public class BottleMessageService {
 
     @Transactional
     public UserBottleMessagesResponse deleteBottleMessage(Long userId, Long messageId) {
-        UserEntity recipient = userService.findUserById(userId);
         Optional<BottleMessageReceiptLog> message = bottleMessageLogRepository.findByMessageIdAndRecipient(
-                messageId, recipient);
+                messageId, userId);
 
         if (message.isPresent()) {
             message.get().delete();

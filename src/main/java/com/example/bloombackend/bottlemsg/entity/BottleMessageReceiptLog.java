@@ -2,6 +2,7 @@ package com.example.bloombackend.bottlemsg.entity;
 
 import java.time.LocalDateTime;
 
+import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.example.bloombackend.user.entity.UserEntity;
@@ -36,6 +37,7 @@ public class BottleMessageReceiptLog {
 	@JoinColumn(name = "recipient_id", nullable = false)
 	private UserEntity recipient;
 
+	@Getter
 	@CreationTimestamp
 	@Column(name = "received_at")
 	private LocalDateTime receivedAt;

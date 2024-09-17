@@ -2,6 +2,7 @@ package com.example.bloombackend.bottlemsg.entity;
 
 import java.time.LocalDateTime;
 
+import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.example.bloombackend.bottlemsg.controller.dto.response.BottleMessageResponse;
@@ -24,7 +25,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "bottle_message")
 public class BottleMessageEntity {
-	@Id
+	@Getter
+    @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "message_id")
 	private Long id;
@@ -42,23 +44,20 @@ public class BottleMessageEntity {
 	@Column(name = "postcard_url", nullable = false)
 	private String postcardUrl;
 
+	@Getter
 	@CreationTimestamp
 	@Column(name = "created_at")
 	private LocalDateTime createdAt;
 
 	@Builder
-	public BottleMessageEntity(UserEntity user, String content, String title, String postcardUrl) {
+	public BottleMessageEntity(UserEntity user, String content, String title, String postcardUrl, LocalDateTime sentAt) {
 		this.sender = user;
 		this.content = content;
 		this.title = title;
 		this.postcardUrl = postcardUrl;
 	}
 
-	public Long getId() {
-		return id;
-	}
-
-	public BottleMessageResponse toDto() {
+    public BottleMessageResponse toDto() {
 		return BottleMessageResponse.builder()
 			.messageId(id)
 			.content(content)

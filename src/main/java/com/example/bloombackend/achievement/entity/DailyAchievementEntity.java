@@ -1,11 +1,10 @@
 package com.example.bloombackend.achievement.entity;
 
+import com.example.bloombackend.achievement.controller.dto.response.DailyAchievementResponse;
 import com.example.bloombackend.user.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -28,34 +27,29 @@ public class DailyAchievementEntity {
     @Column(name = "achievement_level", nullable = false)
     private int achievementLevel = 0;
 
-    @CreationTimestamp
     @Column(updatable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     public DailyAchievementEntity(UserEntity user, FlowerEntity flower) {
         this.user = user;
         this.flower = flower;
     }
 
-    public FlowerEntity getFlower() {
-        return flower;
-    }
-
     public int getAchievementLevel() {
         return achievementLevel;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public int increaseAchievementLevel(int increaseBy) {
+    public void increaseAchievementLevel(int increaseBy) {
         if (achievementLevel + increaseBy >= 0 && achievementLevel + increaseBy <= 9) {
             achievementLevel += increaseBy;
         }
-        return achievementLevel;
+    }
+
+    public DailyAchievementResponse toDto() {
+        return new DailyAchievementResponse(createdAt.toLocalDate(), getIconUrl(), achievementLevel);
+    }
+
+    private String getIconUrl() {
+        return achievementLevel == 9 ? flower.getIconUrl() : AchievementIcon.fromLevel(achievementLevel).getUrl();
     }
 }

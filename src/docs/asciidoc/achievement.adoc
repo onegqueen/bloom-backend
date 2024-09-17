@@ -1,0 +1,71 @@
+= 성취도 API
+BloomBackend Team
+2024-09-12
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+== 성취도 API
+
+=== 1. 일일 꽃 등록 API
+
+==== HTTP request
+
+include::{snippets}/achievement/set-daily-flower/http-request.adoc[]
+
+==== request body
+
+include::{snippets}/achievement/set-daily-flower/request-fields.adoc[]
+
+
+=== 2. 성취도 레벨 업데이트 API
+
+==== HTTP request
+
+include::{snippets}/achievement/update-achievement-level/http-request.adoc[]
+
+==== request body
+
+include::{snippets}/achievement/update-achievement-level/request-fields.adoc[]
+
+==== HTTP response
+
+include::{snippets}/achievement/update-achievement-level/http-response.adoc[]
+
+==== response body
+
+include::{snippets}/achievement/update-achievement-level/response-fields.adoc[]
+
+
+=== 3. 월간 성취도 조회 API
+
+==== HTTP request
+
+include::{snippets}/achievement/get-monthly-achievements/http-request.adoc[]
+
+==== query parameters
+
+include::{snippets}/achievement/get-monthly-achievements/query-parameters.adoc[]
+
+==== HTTP response
+
+include::{snippets}/achievement/get-monthly-achievements/http-response.adoc[]
+
+==== response body
+
+include::{snippets}/achievement/get-monthly-achievements/response-fields.adoc[]
+
+=== 4. 6개월 성취도 조회 API
+
+==== HTTP request
+
+include::{snippets}/achievement/get-recent-six-months-achievements/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/achievement/get-recent-six-months-achievements/http-response.adoc[]
+
+==== response body
+
+include::{snippets}/achievement/get-recent-six-months-achievements/response-fields.adoc[]
+

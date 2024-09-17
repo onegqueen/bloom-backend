@@ -27,6 +27,8 @@ import com.example.bloombackend.bottlemsg.repository.BottleMessageRepository;
 import com.example.bloombackend.user.entity.UserEntity;
 import com.example.bloombackend.user.service.UserService;
 
+import static java.util.stream.Nodes.collect;
+
 @Service
 public class BottleMessageService {
     private final BottleMessageRepository bottleMessageRepository;
@@ -58,7 +60,7 @@ public class BottleMessageService {
     public BottleMessageWithReactionResponse getRandomBottleMessage(Long userId) {
         BottleMessageEntity message = findRandomUnreceivedMessage(userId);
         createBottleMessageReceiptLog(userId, message);
-        return getBottleMessage(message.getId(),userId);
+        return getBottleMessage(message.getId(), userId);
     }
 
     private boolean isReacted(Long userId) {
@@ -82,29 +84,28 @@ public class BottleMessageService {
         int empathyCount = reactionsCountMap.getOrDefault(ReactionType.EMPATHY, 0L).intValue();
         int cheerCount = reactionsCountMap.getOrDefault(ReactionType.CHEER, 0L).intValue();
 
-        return new BottleMessageReactionResponse(isReacted,likeCount, empathyCount, cheerCount);
+        return new BottleMessageReactionResponse(isReacted, likeCount, empathyCount, cheerCount);
     }
 
     @Transactional(readOnly = true)
     public UserBottleMessagesResponse getUserBottleMessages(Long userId) {
         List<BottleMessageEntity> savedMessages = bottleMessageRepository.findSavedMessagesByUserId(userId);
-        return new UserBottleMessagesResponse(
-                savedMessages.stream().map(BottleMessageEntity::toDto).collect(Collectors.toList()));
+        return getBottleMessages(savedMessages,userId);
     }
+
 
     @Transactional(readOnly = true)
-    public BottleMessageWithReactionResponse getBottleMessage(Long messageId,Long userId) {
-        BottleMessageLogResponse log = getDateLog(messageId,userId);
+    public BottleMessageWithReactionResponse getBottleMessage(Long messageId, Long userId) {
         BottleMessageEntity message = getBottleMessageEntity(messageId);
-        BottleMessageReactionResponse reaction = getReactionCount(messageId,isReacted(userId));
-        return new BottleMessageWithReactionResponse(log,message.toDto(), reaction);
+        BottleMessageReactionResponse reaction = getReactionCount(messageId, isReacted(userId));
+        return new BottleMessageWithReactionResponse(message.toDto(), reaction);
     }
 
-    private BottleMessageLogResponse getDateLog(Long messageId,Long userId){
-        BottleMessageReceiptLog log = bottleMessageLogRepository.findByMessageIdAndRecipient(messageId,userId).get();
+    private BottleMessageLogResponse getDateLog(Long messageId, Long userId) {
+        BottleMessageReceiptLog log = bottleMessageLogRepository.findByMessageIdAndRecipient(messageId, userId).get();
         BottleMessageEntity message = getBottleMessageEntity(messageId);
-        return new BottleMessageLogResponse(localDateToString(log.getReceivedAt(),"yyyy-MM-dd HH:mm:ss"),
-                localDateToString(message.getCreatedAt(),"yyyy-MM-dd HH:mm:ss"));
+        return new BottleMessageLogResponse(localDateToString(log.getReceivedAt(), "yyyy-MM-dd HH:mm:ss"),
+                localDateToString(message.getCreatedAt(), "yyyy-MM-dd HH:mm:ss"));
     }
 
     private String localDateToString(LocalDateTime date, String format) {
@@ -122,7 +123,7 @@ public class BottleMessageService {
                         .message(getBottleMessageEntity(messageId))
                         .reactionType(ReactionType.valueOf(request.reaction()))
                         .build());
-        return getReactionCount(messageId,isReacted(userId));
+        return getReactionCount(messageId, isReacted(userId));
     }
 
     @Transactional
@@ -145,7 +146,16 @@ public class BottleMessageService {
     @Transactional(readOnly = true)
     public UserBottleMessagesResponse getSentBottleMessages(Long userId) {
         List<BottleMessageEntity> sentMessages = bottleMessageRepository.findBySenderId(userId);
-        return new UserBottleMessagesResponse(
-                sentMessages.stream().map(BottleMessageEntity::toDto).collect(Collectors.toList()));
+        return getBottleMessages(sentMessages,userId);
+    }
+
+    private UserBottleMessagesResponse getBottleMessages(List<BottleMessageEntity> bottleMessageEntities,Long userId) {
+        return new UserBottleMessagesResponse(bottleMessageEntities.stream()
+                .map(savedMessage -> {
+                            BottleMessageLogResponse log = getDateLog(savedMessage.getId(), userId);
+                            return BottleMessageWithDateLogResponse.of(log, savedMessage.toDto());
+                        }
+                )
+                .collect(Collectors.toList()));
     }
 }

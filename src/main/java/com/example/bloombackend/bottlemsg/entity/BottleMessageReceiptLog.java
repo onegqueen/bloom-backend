@@ -47,7 +47,6 @@ public class BottleMessageReceiptLog {
 	public BottleMessageReceiptLog(BottleMessageEntity message, UserEntity recipient) {
 		this.message = message;
 		this.recipient = recipient;
-		this.isSaved = true;
 	}
 
 	public void delete() {

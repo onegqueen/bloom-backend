@@ -39,8 +39,8 @@ public class BottleMessageController {
 	}
 
 	@GetMapping("/{messageId}")
-	public ResponseEntity<BottleMessageWithReactionResponse> getBottleMessage(@PathVariable Long messageId) {
-		return ResponseEntity.ok(bottleMessageService.getBottleMessage(messageId));
+	public ResponseEntity<BottleMessageWithReactionResponse> getBottleMessage(@CurrentUser Long userId, @PathVariable Long messageId) {
+		return ResponseEntity.ok(bottleMessageService.getBottleMessage(messageId,userId));
 	}
 
 	@GetMapping("/random")
@@ -53,7 +53,7 @@ public class BottleMessageController {
 		@CurrentUser Long userId,
 		@RequestBody CreateBottleMessageReactionRequest request,
 		@PathVariable Long messageId) {
-		return ResponseEntity.ok(bottleMessageService.updateBottleMessageReaction(messageId, request));
+		return ResponseEntity.ok(bottleMessageService.updateBottleMessageReaction(messageId, userId,request));
 	}
 
 	@PostMapping("/{messageId}/delete")

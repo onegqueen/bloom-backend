@@ -1,12 +1,7 @@
 package com.example.bloombackend.bottlemsg.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.bloombackend.bottlemsg.controller.dto.request.CreateBottleMessageReactionRequest;
 import com.example.bloombackend.bottlemsg.controller.dto.request.CreateBottleMessageRequest;
@@ -66,5 +61,15 @@ public class BottleMessageController {
 	@GetMapping("/sent")
 	public ResponseEntity<UserBottleMessagesResponse> sentBottleMessages(@CurrentUser Long userId) {
 		return ResponseEntity.ok(bottleMessageService.getSentBottleMessages(userId));
+	}
+
+	@DeleteMapping("/{messageId}/react")
+	public ResponseEntity<Void> deleteBottleMessageReaction(
+			@CurrentUser Long userId,
+			@PathVariable Long messageId,
+			@RequestBody CreateBottleMessageReactionRequest request
+	){
+		bottleMessageService.deleteBottleMessageReaction(messageId,userId, request.reaction());
+		return ResponseEntity.ok().build();
 	}
 }

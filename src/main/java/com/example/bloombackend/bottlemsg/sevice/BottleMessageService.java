@@ -1,6 +1,5 @@
 package com.example.bloombackend.bottlemsg.sevice;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -26,8 +25,6 @@ import com.example.bloombackend.bottlemsg.repository.BottleMessageReactionReposi
 import com.example.bloombackend.bottlemsg.repository.BottleMessageRepository;
 import com.example.bloombackend.user.entity.UserEntity;
 import com.example.bloombackend.user.service.UserService;
-
-import static java.util.stream.Nodes.collect;
 
 @Service
 public class BottleMessageService {
@@ -157,5 +154,10 @@ public class BottleMessageService {
                         }
                 )
                 .collect(Collectors.toList()));
+    }
+
+    @Transactional
+    public void deleteBottleMessageReaction(Long messageId,Long userId,String reactionType){
+        bottleMessageReactionRepository.deleteByMessageIdAndUserIdAndReactionType(messageId,userId,ReactionType.valueOf(reactionType));
     }
 }

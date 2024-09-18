@@ -69,7 +69,12 @@ public class QuestService {
     }
 
     @Transactional
-    public void unregisterQuests(Long userId, Long questId) {
+    public void unregisterQuest(Long userId, Long questId) {
         userQuestLogRepository.deleteByUserIdAndQuestId(userId, questId);
+    }
+
+    @Transactional
+    public void completeQuest(Long userId, Long questId) {
+         userQuestLogRepository.completeQuest(userId, questId);
     }
 }

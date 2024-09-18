@@ -33,9 +33,15 @@ public class QuestController {
         return ResponseEntity.ok(questService.getRegisteredQuestsForToday(userId));
     }
 
+    @PatchMapping("/{questId}/complete")
+    public ResponseEntity<Void> completeQuest(@CurrentUser Long userId, @PathVariable Long questId) {
+        questService.completeQuest(userId, questId);
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping("/{questId}")
-    public ResponseEntity<Void> unregisterQuests(@CurrentUser Long userId, @PathVariable Long questId) {
-        questService.unregisterQuests(userId, questId);
+    public ResponseEntity<Void> unregisterQuest(@CurrentUser Long userId, @PathVariable Long questId) {
+        questService.unregisterQuest(userId, questId);
         return ResponseEntity.ok().build();
     }
 }

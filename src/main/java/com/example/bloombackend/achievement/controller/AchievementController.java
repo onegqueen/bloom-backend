@@ -5,6 +5,7 @@ import com.example.bloombackend.achievement.controller.dto.request.FlowerRegiste
 import com.example.bloombackend.achievement.controller.dto.response.AchievementLevelUpdateResponse;
 import com.example.bloombackend.achievement.controller.dto.response.MonthlyDataResponse;
 import com.example.bloombackend.achievement.controller.dto.response.RecentSixMonthDataResponse;
+import com.example.bloombackend.achievement.controller.response.DailyFlowerResponse;
 import com.example.bloombackend.achievement.service.AchievementService;
 import com.example.bloombackend.global.config.annotation.CurrentUser;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,11 @@ public class AchievementController {
                                                  @CurrentUser Long userId) {
         achievementService.setDailyFlower(userId, request);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/flower")
+    public ResponseEntity<DailyFlowerResponse> getDailyFlower(@CurrentUser Long userId) {
+        return ResponseEntity.ok(achievementService.getDailyFlower(userId));
     }
 
     @PatchMapping("")

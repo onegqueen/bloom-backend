@@ -3,6 +3,7 @@ package com.example.bloombackend.achievement.service;
 import com.example.bloombackend.achievement.controller.dto.request.AchievementLevelUpdateRequest;
 import com.example.bloombackend.achievement.controller.dto.request.FlowerRegisterRequest;
 import com.example.bloombackend.achievement.controller.dto.response.*;
+import com.example.bloombackend.achievement.controller.response.DailyFlowerResponse;
 import com.example.bloombackend.achievement.entity.DailyAchievementEntity;
 import com.example.bloombackend.achievement.entity.FlowerEntity;
 import com.example.bloombackend.achievement.repository.DailyAchievementRepository;
@@ -87,5 +88,9 @@ public class AchievementService {
                 .mapToInt(MonthlyAchievementResponse::bloomed)
                 .average()
                 .orElse(0);
+    }
+
+    public DailyFlowerResponse getDailyFlower(Long userId) {
+        return dailyAchievementRepository.getDailyFlower(userId);
     }
 }

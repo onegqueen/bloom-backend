@@ -2,12 +2,8 @@ package com.example.bloombackend.donelist.service;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -102,9 +98,7 @@ public class DoneListService {
 
     @Transactional(readOnly = true)
     public DoneListResponse getDoneListByDate(Long userId, String date) {
-        Map<String, LocalDateTime> startAndEndOfDay = getStartAndEndOfDay(stringToDate(date));
-        List<DoneList> doneLists = doneListRepository.findByUserIdAndCreatedAtBetween(userId,
-                startAndEndOfDay.get("start"), startAndEndOfDay.get("end"));
+        List<DoneList> doneLists = doneListRepository.findByUserIdAndDoneDate(userId, stringToDate(date));
         return new DoneListResponse(date, doneItemResponses(doneLists));
     }
 
@@ -112,17 +106,6 @@ public class DoneListService {
         return doneLists.stream()
                 .map(DoneList::toDto)
                 .collect(Collectors.toList());
-    }
-
-    private Map<String, LocalDateTime> getStartAndEndOfDay(LocalDate date) {
-        Map<String, LocalDateTime> startAndEndOfDay = new HashMap<>();
-        LocalDateTime start = LocalDateTime.of(date, LocalTime.of(0, 0, 0));
-        LocalDateTime end = LocalDateTime.of(date, LocalTime.of(23, 59, 59));
-
-        startAndEndOfDay.put("start", start);
-        startAndEndOfDay.put("end", end);
-
-        return startAndEndOfDay;
     }
 
     private LocalDate stringToDate(String date) {

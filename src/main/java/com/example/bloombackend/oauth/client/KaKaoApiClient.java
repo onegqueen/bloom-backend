@@ -34,7 +34,6 @@ public class KaKaoApiClient {
 
 	@Autowired
 	public KaKaoApiClient(RestTemplate restTemplate) {
-		System.out.println(tokenUrl + userInfoUrl);
 		this.restTemplate = restTemplate;
 	}
 

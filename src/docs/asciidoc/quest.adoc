@@ -58,6 +58,24 @@ include::{snippets}/quest/get-registered-today-quests/response-fields.adoc[]
 
 include::{snippets}/quest/unregister-quests/http-request.adoc[]
 
+==== path parameters
+
+include::{snippets}/quest/unregister-quests/path-parameters.adoc[]
+
 ==== HTTP response
 
 include::{snippets}/quest/unregister-quests/http-response.adoc[]
+
+=== 5. 퀘스트 완료 API
+
+==== HTTP request
+
+include::{snippets}/quest/complete-quest/http-request.adoc[]
+
+==== path parameters
+
+include::{snippets}/quest/complete-quest/path-parameters.adoc[]
+
+==== HTTP response
+
+include::{snippets}/quest/complete-quest/http-response.adoc[]

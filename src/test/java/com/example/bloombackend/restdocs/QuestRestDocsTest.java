@@ -22,6 +22,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import static org.mockito.Mockito.doReturn;
@@ -59,14 +60,18 @@ public class QuestRestDocsTest {
 
     private ObjectMapper objectMapper;
 
+    private QuestEntity questEntity1;
+
+    private QuestEntity questEntity2;
+
     @BeforeEach
     void setUp() {
         objectMapper = new ObjectMapper();
         mockToken = "jwtToken";
         testUser = userRepository.save(new UserEntity(OAuthProvider.KAKAO, "testUser", "testId"));
         doReturn(testUser.getId()).when(jwtTokenProvider).getUserIdFromToken(mockToken);
-        questRepository.save(new QuestEntity("https://test.com/icon1.png", "물 마시기", 10));
-        questRepository.save(new QuestEntity("https://test.com/icon2.png", "산책 하기", 1));
+        questEntity1 = questRepository.save(new QuestEntity("https://test.com/icon1.png", "물 마시기", 10));
+        questEntity2 = questRepository.save(new QuestEntity("https://test.com/icon2.png", "산책 하기", 1));
     }
 
     @Test
@@ -110,8 +115,8 @@ public class QuestRestDocsTest {
     @DisplayName("API - 사용자가 등록한 오늘의 퀘스트 목록 조회")
     void getRegisteredQuestsTest() throws Exception {
         //given
-        UserQuestLogEntity log1 = new UserQuestLogEntity(testUser, questRepository.findById(1L).orElseThrow());
-        UserQuestLogEntity log2 = new UserQuestLogEntity(testUser, questRepository.findById(2L).orElseThrow());
+        UserQuestLogEntity log1 = new UserQuestLogEntity(testUser, questEntity1);
+        UserQuestLogEntity log2 = new UserQuestLogEntity(testUser, questEntity2);
         userQuestLogRepository.saveAll(List.of(log1, log2));
 
         //when & then
@@ -132,21 +137,46 @@ public class QuestRestDocsTest {
     }
 
     @Test
+    @DisplayName("API - 퀘스트 완료")
+    void completeQuestTest() throws Exception {
+        // given
+        UserQuestLogEntity log = new UserQuestLogEntity(testUser, questEntity1);
+        userQuestLogRepository.save(log);
+
+        // when & then
+        mockMvc.perform(patch("/api/quests/{questId}/complete", getQuestId(questEntity1))
+                        .header("Authorization", mockToken)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("quest/complete-quest",
+                        pathParameters(
+                                parameterWithName("questId").description("완료할 퀘스트 ID")
+                        )
+                ));
+    }
+
+    @Test
     @DisplayName("API - 퀘스트 등록 해제")
     void unregisterQuestsTest() throws Exception {
         //given
-        UserQuestLogEntity log = new UserQuestLogEntity(testUser, questRepository.findById(1L).orElseThrow());
+        UserQuestLogEntity log = new UserQuestLogEntity(testUser, questEntity1);
         userQuestLogRepository.save(log);
 
         //when & then
-        mockMvc.perform(delete("/api/quests/{questId}", 1L)
+        mockMvc.perform(delete("/api/quests/{questId}", getQuestId(questEntity1))
                 .header("Authorization", mockToken)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("quest/unregister-quests",
                         pathParameters(
-                                parameterWithName("questId").description("해제할 퀘스트 ID")
+                                parameterWithName("questId").description("등록 해제할 퀘스트 ID")
                         )
                 ));
+    }
+
+    private Long getQuestId(QuestEntity questEntity) throws Exception {
+        Field idField = QuestEntity.class.getDeclaredField("id");
+        idField.setAccessible(true);
+        return (Long) idField.get(questEntity);
     }
 }

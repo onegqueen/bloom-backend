@@ -30,137 +30,138 @@ import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class DoneListService {
-	private final DoneListRepository doneListRepository;
-	private final PhotoRepository photoRepository;
-	private final S3Uploader s3Uploader;
+    private final DoneListRepository doneListRepository;
+    private final PhotoRepository photoRepository;
+    private final S3Uploader s3Uploader;
 
-	public DoneListService(DoneListRepository doneListRepository, PhotoRepository photoRepository,
-		S3Uploader s3Uploader) {
-		this.doneListRepository = doneListRepository;
-		this.photoRepository = photoRepository;
-		this.s3Uploader = s3Uploader;
-	}
+    public DoneListService(DoneListRepository doneListRepository, PhotoRepository photoRepository,
+                           S3Uploader s3Uploader) {
+        this.doneListRepository = doneListRepository;
+        this.photoRepository = photoRepository;
+        this.s3Uploader = s3Uploader;
+    }
 
-	@Transactional
-	public DoneItemDetailResponse createDoneItem(Long userId, CreateDoneItemRequest request,
-		List<MultipartFile> photoFiles) {
-		DoneItemResponse content = createDoneItemContent(userId, request);
-		List<DoneItemPhotoResponse> photos = createDoneItemPhoto(content.itemId(), photoFiles);
-		return new DoneItemDetailResponse(content, photos);
-	}
+    @Transactional
+    public DoneItemDetailResponse createDoneItem(Long userId, CreateDoneItemRequest request,
+                                                 List<MultipartFile> photoFiles) {
+        DoneItemResponse content = createDoneItemContent(userId, request);
+        List<DoneItemPhotoResponse> photos = createDoneItemPhoto(content.itemId(), photoFiles);
+        return new DoneItemDetailResponse(content, photos);
+    }
 
-	private DoneItemResponse createDoneItemContent(Long userId, CreateDoneItemRequest request) {
-		return doneListRepository.save(
-			DoneList.builder()
-				.userId(userId)
-				.title(request.title())
-				.iconUrl(request.iconUrl())
-				.content(request.content()).build()
-		).toDto();
-	}
+    private DoneItemResponse createDoneItemContent(Long userId, CreateDoneItemRequest request) {
+        return doneListRepository.save(DoneList.builder()
+                .userId(userId)
+                .title(request.title())
+                .iconUrl(request.iconUrl())
+                .content(request.content())
+                .doneDate(stringToDate(request.doneDate()))
+                .build()
+        ).toDto();
+    }
 
-	private List<DoneItemPhotoResponse> createDoneItemPhoto(Long doneListId, List<MultipartFile> photoFiles) {
-		List<Photo> photos = photoFiles.stream()
-			.map(photoFile -> new Photo(uploadPhoto(photoFile), doneListId))
-			.collect(Collectors.toList());
-		return getPhotoResponses(photoRepository.saveAll(photos));
-	}
+    private List<DoneItemPhotoResponse> createDoneItemPhoto(Long doneListId, List<MultipartFile> photoFiles) {
+        List<Photo> photos = photoFiles.stream()
+                .map(photoFile -> new Photo(uploadPhoto(photoFile), doneListId))
+                .collect(Collectors.toList());
+        return getPhotoResponses(photoRepository.saveAll(photos));
+    }
 
-	private String uploadPhoto(MultipartFile file) {
-		try {
-			return s3Uploader.upload(file);
-		} catch (IOException e) {
-			throw new RuntimeException("Failed to upload photo", e);
-		}
-	}
+    private String uploadPhoto(MultipartFile file) {
+        try {
+            return s3Uploader.upload(file);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to upload photo", e);
+        }
+    }
 
-	private List<DoneItemPhotoResponse> getPhotoResponses(List<Photo> photos) {
-		return photos.stream()
-			.map(photo -> photo.toDto())
-			.collect(Collectors.toList());
-	}
+    private List<DoneItemPhotoResponse> getPhotoResponses(List<Photo> photos) {
+        return photos.stream()
+                .map(photo -> photo.toDto())
+                .collect(Collectors.toList());
+    }
 
-	@Transactional(readOnly = true)
-	public DoneItemDetailResponse getDoneItem(Long itemId) {
-		DoneItemResponse doneitem = getDoneListEntity(itemId).toDto();
-		List<DoneItemPhotoResponse> photos = getPhotosEntity(itemId).stream()
-			.map(Photo::toDto)
-			.collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public DoneItemDetailResponse getDoneItem(Long itemId) {
+        DoneItemResponse doneitem = getDoneListEntity(itemId).toDto();
+        List<DoneItemPhotoResponse> photos = getPhotosEntity(itemId).stream()
+                .map(Photo::toDto)
+                .collect(Collectors.toList());
 
-		return new DoneItemDetailResponse(doneitem, photos);
-	}
+        return new DoneItemDetailResponse(doneitem, photos);
+    }
 
-	private DoneList getDoneListEntity(Long itemId) {
-		return doneListRepository.findById(itemId)
-			.orElseThrow(() -> new EntityNotFoundException("donelist item not found: " + itemId));
-	}
+    private DoneList getDoneListEntity(Long itemId) {
+        return doneListRepository.findById(itemId)
+                .orElseThrow(() -> new EntityNotFoundException("donelist item not found: " + itemId));
+    }
 
-	private List<Photo> getPhotosEntity(Long itemId) {
-		return photoRepository.findByDoneListId(itemId);
-	}
+    private List<Photo> getPhotosEntity(Long itemId) {
+        return photoRepository.findByDoneListId(itemId);
+    }
 
-	@Transactional(readOnly = true)
-	public DoneListResponse getDoneListByDate(Long userId, String date) {
-		Map<String, LocalDateTime> startAndEndOfDay = getStartAndEndOfDay(stringToDate(date));
-		List<DoneList> doneLists = doneListRepository.findByUserIdAndCreatedAtBetween(userId,
-			startAndEndOfDay.get("start"), startAndEndOfDay.get("end"));
-		return new DoneListResponse(date, doneItemResponses(doneLists));
-	}
+    @Transactional(readOnly = true)
+    public DoneListResponse getDoneListByDate(Long userId, String date) {
+        Map<String, LocalDateTime> startAndEndOfDay = getStartAndEndOfDay(stringToDate(date));
+        List<DoneList> doneLists = doneListRepository.findByUserIdAndCreatedAtBetween(userId,
+                startAndEndOfDay.get("start"), startAndEndOfDay.get("end"));
+        return new DoneListResponse(date, doneItemResponses(doneLists));
+    }
 
-	private List<DoneItemResponse> doneItemResponses(List<DoneList> doneLists) {
-		return doneLists.stream()
-			.map(DoneList::toDto)
-			.collect(Collectors.toList());
-	}
+    private List<DoneItemResponse> doneItemResponses(List<DoneList> doneLists) {
+        return doneLists.stream()
+                .map(DoneList::toDto)
+                .collect(Collectors.toList());
+    }
 
-	private Map<String, LocalDateTime> getStartAndEndOfDay(LocalDate date) {
-		Map<String, LocalDateTime> startAndEndOfDay = new HashMap<>();
-		LocalDateTime start = LocalDateTime.of(date, LocalTime.of(0, 0, 0));
-		LocalDateTime end = LocalDateTime.of(date, LocalTime.of(23, 59, 59));
+    private Map<String, LocalDateTime> getStartAndEndOfDay(LocalDate date) {
+        Map<String, LocalDateTime> startAndEndOfDay = new HashMap<>();
+        LocalDateTime start = LocalDateTime.of(date, LocalTime.of(0, 0, 0));
+        LocalDateTime end = LocalDateTime.of(date, LocalTime.of(23, 59, 59));
 
-		startAndEndOfDay.put("start", start);
-		startAndEndOfDay.put("end", end);
+        startAndEndOfDay.put("start", start);
+        startAndEndOfDay.put("end", end);
 
-		return startAndEndOfDay;
-	}
+        return startAndEndOfDay;
+    }
 
-	private LocalDate stringToDate(String date) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		return LocalDate.parse(date, formatter);
-	}
+    private LocalDate stringToDate(String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return LocalDate.parse(date, formatter);
+    }
 
-	@Transactional
-	public DoneItemDetailResponse updateDoneItem(Long itemId, UpdateDoneItemRequest request,
-		List<MultipartFile> updatedPhotoFiles) {
-		DoneList doneList = getDoneListEntity(itemId);
+    @Transactional
+    public DoneItemDetailResponse updateDoneItem(Long itemId, UpdateDoneItemRequest request,
+                                                 List<MultipartFile> updatedPhotoFiles) {
+        DoneList doneList = getDoneListEntity(itemId);
 
-		request.title().ifPresent(doneList::updateTitle);
-		request.content().ifPresent(doneList::updateContent);
+        request.title().ifPresent(doneList::updateTitle);
+        request.content().ifPresent(doneList::updateContent);
 
-		if (!request.deletedPhotoIds().isEmpty()) {
-			deletePhotoEntities(request.deletedPhotoIds());
-		}
+        if (!request.deletedPhotoIds().isEmpty()) {
+            deletePhotoEntities(request.deletedPhotoIds());
+        }
 
-		if (updatedPhotoFiles != null && updatedPhotoFiles.stream().anyMatch(file -> !file.isEmpty())) {
-			createDoneItemPhoto(itemId, updatedPhotoFiles);
-		}
+        if (updatedPhotoFiles != null && updatedPhotoFiles.stream().anyMatch(file -> !file.isEmpty())) {
+            createDoneItemPhoto(itemId, updatedPhotoFiles);
+        }
 
-		return getDoneItem(itemId);
-	}
+        return getDoneItem(itemId);
+    }
 
-	@Transactional
-	public void deleteDoneItem(Long itemId) {
-		deleteDoneItemContent(itemId);
-		deletePhotoEntities(getPhotosEntity(itemId).stream()
-			.map(Photo::getId).toList());
-	}
+    @Transactional
+    public void deleteDoneItem(Long itemId) {
+        deleteDoneItemContent(itemId);
+        deletePhotoEntities(getPhotosEntity(itemId).stream()
+                .map(Photo::getId).toList());
+    }
 
-	private void deleteDoneItemContent(Long itemId) {
-		doneListRepository.deleteById(itemId);
-	}
+    private void deleteDoneItemContent(Long itemId) {
+        doneListRepository.deleteById(itemId);
+    }
 
-	private void deletePhotoEntities(List<Long> photoIds) {
-		photoRepository.deleteAllById(photoIds);
-	}
+    private void deletePhotoEntities(List<Long> photoIds) {
+        photoRepository.deleteAllById(photoIds);
+    }
 
 }

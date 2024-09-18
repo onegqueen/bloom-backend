@@ -33,7 +33,7 @@ public class DoneListController {
 	public ResponseEntity<DoneItemDetailResponse> createDoneItem(
 		@CurrentUser Long userId,
 		@RequestPart("data") CreateDoneItemRequest request,
-		@RequestPart("files") List<MultipartFile> photos) {
+		@RequestPart(value = "files",required = false) List<MultipartFile> photos) {
 		return ResponseEntity.ok(doneListService.createDoneItem(userId, request, photos));
 	}
 

@@ -11,6 +11,7 @@ spring:
       ddl-auto: create
     properties:
       hibernate:
+        SQL: debug
         dialect:
           storage_engine: innodb
         format_sql: true

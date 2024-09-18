@@ -1,5 +1,6 @@
 package com.example.bloombackend.donelist.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -41,12 +42,16 @@ public class DoneList {
 	@Column(name = "create_at")
 	private LocalDateTime createdAt;
 
+	@Column(name = "done_date")
+	private LocalDate doneDate;
+
 	@Builder
-	public DoneList(String content, String photoUrl, String title, String iconUrl, Long userId) {
+	public DoneList(String content, String photoUrl, String title, String iconUrl, Long userId,LocalDate doneDate) {
 		this.content = content;
 		this.title = title;
 		this.iconUrl = iconUrl;
 		this.userId = userId;
+		this.doneDate = doneDate;
 	}
 
 	public DoneItemResponse toDto() {

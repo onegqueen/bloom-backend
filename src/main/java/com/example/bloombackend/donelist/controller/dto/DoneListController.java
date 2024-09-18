@@ -33,7 +33,7 @@ public class DoneListController {
 	public ResponseEntity<DoneItemDetailResponse> createDoneItem(
 		@CurrentUser Long userId,
 		@RequestPart("data") CreateDoneItemRequest request,
-		@RequestPart("files") List<MultipartFile> photos) {
+		@RequestPart(value = "files", required = false) List<MultipartFile> photos) {
 		return ResponseEntity.ok(doneListService.createDoneItem(userId, request, photos));
 	}
 
@@ -57,7 +57,7 @@ public class DoneListController {
 		@CurrentUser Long userId,
 		@PathVariable Long itemId,
 		@RequestPart("data") UpdateDoneItemRequest request,
-		@RequestPart("files") List<MultipartFile> updatedPhotoFiles
+		@RequestPart(value = "files", required = false) List<MultipartFile> updatedPhotoFiles
 	) {
 		return ResponseEntity.ok(doneListService.updateDoneItem(itemId, request, updatedPhotoFiles));
 	}

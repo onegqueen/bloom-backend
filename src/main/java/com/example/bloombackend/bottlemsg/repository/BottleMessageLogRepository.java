@@ -8,5 +8,5 @@ import com.example.bloombackend.bottlemsg.entity.BottleMessageReceiptLog;
 import com.example.bloombackend.user.entity.UserEntity;
 
 public interface BottleMessageLogRepository extends JpaRepository<BottleMessageReceiptLog, Long> {
-	Optional<BottleMessageReceiptLog> findByMessageIdAndRecipient(Long bottleMessageId, Long userId);
+	Optional<BottleMessageReceiptLog> findByMessageIdAndRecipient(Long bottleMessageId, UserEntity recipient);
 }

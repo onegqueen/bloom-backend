@@ -1,15 +1,17 @@
 package com.example.bloombackend.bottlemsg.repository;
 
-import com.example.bloombackend.bottlemsg.entity.ReactionType;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.bloombackend.bottlemsg.entity.BottleMessageReaction;
+import com.example.bloombackend.bottlemsg.entity.ReactionType;
 import com.example.bloombackend.bottlemsg.repository.querydsl.BottleMessageReactionRepositoryCustom;
-
-import java.util.Optional;
+import com.example.bloombackend.user.entity.UserEntity;
 
 public interface BottleMessageReactionRepository
 	extends JpaRepository<BottleMessageReaction, Long>, BottleMessageReactionRepositoryCustom {
 	Optional<BottleMessageReaction> findByReactorId(Long UserId);
-	Void deleteByMessageIdAndUserIdAndReactionType(Long MessageId, Long UserId, ReactionType ReactionType);
+
+	Void deleteByMessageIdAndReactorAndReactionType(Long messageId, UserEntity reactor, ReactionType reactionType);
 }

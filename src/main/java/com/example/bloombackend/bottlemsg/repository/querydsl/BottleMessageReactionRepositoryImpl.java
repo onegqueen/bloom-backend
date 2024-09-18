@@ -27,7 +27,6 @@ public class BottleMessageReactionRepositoryImpl implements BottleMessageReactio
 			.groupBy(bottleMessageReaction.reactionType)
 			.fetch();
 
-		// 결과를 map으로 변환
 		return result.stream()
 			.collect(Collectors.toMap(
 				tuple -> tuple.get(bottleMessageReaction.reactionType),

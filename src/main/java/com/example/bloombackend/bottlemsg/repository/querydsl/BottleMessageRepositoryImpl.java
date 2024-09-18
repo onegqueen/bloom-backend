@@ -28,7 +28,7 @@ public class BottleMessageRepositoryImpl implements BottleMessageRepositoryCusto
 				queryFactory.select(receiptLog.message.id)
 					.from(receiptLog)
 					.where(receiptLog.recipient.id.eq(userId))
-			))
+			), bottleMessage.sender.id.ne(userId))
 			.fetch();
 	}
 

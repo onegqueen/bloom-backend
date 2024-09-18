@@ -42,8 +42,9 @@ public class QuestService {
         userQuestLogRepository.saveAll(createUserQuestLogEntities(request, user));
     }
 
-    private List<UserQuestLogEntity> createUserQuestLogEntities(final QuestRegisterRequest request, final UserEntity user) {
-        return questRepository.findAllById(request.questIds()).stream()
+    private List<UserQuestLogEntity> createUserQuestLogEntities(QuestRegisterRequest request, UserEntity user) {
+        List<QuestEntity> unLoggedQuests = questRepository.findUnLoggedQuests(user, request.questIds());
+        return unLoggedQuests.stream()
                 .map(quest -> new UserQuestLogEntity(user, quest))
                 .toList();
     }

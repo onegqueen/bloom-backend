@@ -66,7 +66,7 @@ public class BottleMessageService {
 	}
 
 	private boolean isReacted(Long userId) {
-		return bottleMessageReactionRepository.findByReactorId(userId).isPresent();
+		return bottleMessageReactionRepository.findByReactor(userService.findUserById(userId)).isPresent();
 	}
 
 	private void createBottleMessageReceiptLog(Long userId, BottleMessageEntity message) {
@@ -147,7 +147,7 @@ public class BottleMessageService {
 
 	@Transactional(readOnly = true)
 	public UserBottleMessagesResponse getSentBottleMessages(Long userId) {
-		List<BottleMessageEntity> sentMessages = bottleMessageRepository.findBySenderId(userId);
+		List<BottleMessageEntity> sentMessages = bottleMessageRepository.findBySender(userService.findUserById(userId));
 		return getBottleMessages(sentMessages, userId);
 	}
 

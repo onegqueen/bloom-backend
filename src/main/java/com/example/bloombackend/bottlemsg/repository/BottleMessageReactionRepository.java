@@ -11,7 +11,7 @@ import com.example.bloombackend.user.entity.UserEntity;
 
 public interface BottleMessageReactionRepository
 	extends JpaRepository<BottleMessageReaction, Long>, BottleMessageReactionRepositoryCustom {
-	Optional<BottleMessageReaction> findByReactorId(Long UserId);
+	Optional<BottleMessageReaction> findByReactor(UserEntity reactor);
 
 	Void deleteByMessageIdAndReactorAndReactionType(Long messageId, UserEntity reactor, ReactionType reactionType);
 }

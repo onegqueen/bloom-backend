@@ -4,10 +4,8 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.bloombackend.bottlemsg.entity.BottleMessageEntity;
 import com.example.bloombackend.bottlemsg.entity.BottleMessageReceiptLog;
-import com.example.bloombackend.user.entity.UserEntity;
 
 public interface BottleMessageLogRepository extends JpaRepository<BottleMessageReceiptLog, Long> {
-	Optional<BottleMessageReceiptLog> findByMessageAndRecipient(BottleMessageEntity message, UserEntity recipient);
+	Optional<BottleMessageReceiptLog> findByMessageIdAndRecipientId(Long messageId, Long userId);
 }

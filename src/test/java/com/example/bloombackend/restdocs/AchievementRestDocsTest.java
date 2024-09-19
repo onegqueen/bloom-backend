@@ -96,10 +96,10 @@ public class AchievementRestDocsTest {
     }
 
     @Test
-    @DisplayName("API - 일일 꽃 등록")
+    @DisplayName("API - 오늘의 꽃 등록")
     void setDailyFlowerTest() throws Exception {
         //given
-        FlowerRegisterRequest request = new FlowerRegisterRequest(1L);
+        FlowerRegisterRequest request = new FlowerRegisterRequest(flowerEntity.getId());
 
         //when & then
         mockMvc.perform(post("/api/achievement/flower")
@@ -171,6 +171,24 @@ public class AchievementRestDocsTest {
                                 fieldWithPath("monthlyData[].month").description("조회된 월"),
                                 fieldWithPath("monthlyData[].bloomed").description("꽃이 핀 횟수"),
                                 fieldWithPath("averageBloomed").description("평균 꽃이 핀 횟수")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("API - 오늘의 꽃 조회")
+    void getDailyFlowerTest() throws Exception {
+        //given
+        dailyAchievementRepository.save(new DailyAchievementEntity(testUser, flowerEntity));
+
+        //when & then
+        mockMvc.perform(get("/api/achievement/flower")
+                .header("Authorization", mockToken))
+                .andExpect(status().isOk())
+                .andDo(document("achievement/get-daily-flower",
+                        responseFields(
+                                fieldWithPath("flowerId").description("오늘의 꽃 ID"),
+                                fieldWithPath("iconUrl").description("오늘의 꽃 아이콘 URL")
                         )
                 ));
     }

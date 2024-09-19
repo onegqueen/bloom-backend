@@ -17,8 +17,23 @@ include::{snippets}/achievement/set-daily-flower/http-request.adoc[]
 
 include::{snippets}/achievement/set-daily-flower/request-fields.adoc[]
 
+=== 2. 오늘 등록한 꽃 조회 API
 
-=== 2. 성취도 레벨 업데이트 API
+==== HTTP request
+
+include::{snippets}/achievement/get-daily-flower/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/achievement/get-daily-flower/http-response.adoc[]
+
+==== response body
+
+include::{snippets}/achievement/get-daily-flower/response-fields.adoc[]
+
+==== HTTP response
+
+=== 3. 성취도 레벨 업데이트 API
 
 ==== HTTP request
 
@@ -37,7 +52,7 @@ include::{snippets}/achievement/update-achievement-level/http-response.adoc[]
 include::{snippets}/achievement/update-achievement-level/response-fields.adoc[]
 
 
-=== 3. 월간 성취도 조회 API
+=== 4. 월간 성취도 조회 API
 
 ==== HTTP request
 
@@ -55,7 +70,7 @@ include::{snippets}/achievement/get-monthly-achievements/http-response.adoc[]
 
 include::{snippets}/achievement/get-monthly-achievements/response-fields.adoc[]
 
-=== 4. 6개월 성취도 조회 API
+=== 5. 6개월 성취도 조회 API
 
 ==== HTTP request
 

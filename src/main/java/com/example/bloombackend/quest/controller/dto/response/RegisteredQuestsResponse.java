@@ -2,5 +2,5 @@ package com.example.bloombackend.quest.controller.dto.response;
 
 import java.util.List;
 
-public record RegisteredQuestsResponse(List<UserQuestLogDto> quests) {
+public record RegisteredQuestsResponse(List<UserQuestLogResponse> quests) {
 }

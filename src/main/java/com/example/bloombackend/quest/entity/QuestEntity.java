@@ -1,6 +1,6 @@
 package com.example.bloombackend.quest.entity;
 
-import com.example.bloombackend.quest.controller.dto.response.QuestDto;
+import com.example.bloombackend.quest.controller.dto.response.QuestResponse;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -28,7 +28,7 @@ public class QuestEntity {
         this.maxCount = maxCount;
     }
 
-    public QuestDto toDto() {
-        return new QuestDto(id, iconUrl, title, maxCount);
+    public QuestResponse toDto() {
+        return new QuestResponse(id, iconUrl, title, maxCount);
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -35,7 +36,17 @@ public class AchievementService {
     public void setDailyFlower(Long userId, FlowerRegisterRequest request) {
         UserEntity user = getUserEntity(userId);
         FlowerEntity flower = getFlowerEntity(request);
+        if (isFlowerRegistered(userId)) {
+            throw new IllegalArgumentException("flower already registered for today");
+        }
         dailyAchievementRepository.save(new DailyAchievementEntity(user, flower));
+    }
+
+    private boolean isFlowerRegistered(Long userId) {
+        LocalDate now = LocalDate.now();
+        LocalDateTime startOfToday = now.atStartOfDay();
+        LocalDateTime endOfToday = now.atTime(LocalTime.MAX);
+        return dailyAchievementRepository.existsByUserIdAndCreatedAtBetween(userId, startOfToday, endOfToday);
     }
 
     private FlowerEntity getFlowerEntity(FlowerRegisterRequest request) {

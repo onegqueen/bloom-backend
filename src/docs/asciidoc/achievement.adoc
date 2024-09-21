@@ -51,8 +51,21 @@ include::{snippets}/achievement/update-achievement-level/http-response.adoc[]
 
 include::{snippets}/achievement/update-achievement-level/response-fields.adoc[]
 
+=== 4. 오늘의 성취도 조회 API
 
-=== 4. 월간 성취도 조회 API
+==== HTTP request
+
+include::{snippets}/achievement/get-today-achievement/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/achievement/get-today-achievement/http-response.adoc[]
+
+==== response body
+
+include::{snippets}/achievement/get-today-achievement/response-fields.adoc[]
+
+=== 5. 월간 성취도 조회 API
 
 ==== HTTP request
 
@@ -70,7 +83,7 @@ include::{snippets}/achievement/get-monthly-achievements/http-response.adoc[]
 
 include::{snippets}/achievement/get-monthly-achievements/response-fields.adoc[]
 
-=== 5. 6개월 성취도 조회 API
+=== 6. 6개월 성취도 조회 API
 
 ==== HTTP request
 

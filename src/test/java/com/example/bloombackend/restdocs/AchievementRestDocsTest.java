@@ -193,6 +193,25 @@ public class AchievementRestDocsTest {
                 ));
     }
 
+    @Test
+    @DisplayName("API - 오늘의 성취도 조회")
+    void getTodayAchievementTest() throws Exception {
+        //given
+        dailyAchievementRepository.save(new DailyAchievementEntity(testUser, flowerEntity));
+
+        //when & then
+        mockMvc.perform(get("/api/achievement")
+                .header("Authorization", mockToken))
+                .andExpect(status().isOk())
+                .andDo(document("achievement/get-today-achievement",
+                        responseFields(
+                                fieldWithPath("date").description("날짜"),
+                                fieldWithPath("flowerIconUrl").description("설정한 꽃 아이콘 URL"),
+                                fieldWithPath("achievementLevel").description("성취 단계")
+                        )
+                ));
+    }
+
     private void createAchievement(DailyAchievementEntity achievement, LocalDateTime dateTime, int achievementLevel) throws Exception {
         Field createdAtField = DailyAchievementEntity.class.getDeclaredField("createdAt");
         createdAtField.setAccessible(true);

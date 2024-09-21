@@ -101,7 +101,14 @@ public class AchievementService {
                 .orElse(0);
     }
 
+    @Transactional(readOnly = true)
     public DailyFlowerResponse getDailyFlower(Long userId) {
         return dailyAchievementRepository.getDailyFlower(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public DailyAchievementResponse getDailyAchievement(final Long userId) {
+        DailyAchievementEntity dailyAchievement = getDailyAchievementEntity(userId);
+        return dailyAchievement.toDto();
     }
 }

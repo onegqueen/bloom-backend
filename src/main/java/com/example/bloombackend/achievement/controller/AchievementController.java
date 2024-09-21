@@ -3,6 +3,7 @@ package com.example.bloombackend.achievement.controller;
 import com.example.bloombackend.achievement.controller.dto.request.AchievementLevelUpdateRequest;
 import com.example.bloombackend.achievement.controller.dto.request.FlowerRegisterRequest;
 import com.example.bloombackend.achievement.controller.dto.response.AchievementLevelUpdateResponse;
+import com.example.bloombackend.achievement.controller.dto.response.DailyAchievementResponse;
 import com.example.bloombackend.achievement.controller.dto.response.MonthlyDataResponse;
 import com.example.bloombackend.achievement.controller.dto.response.RecentSixMonthDataResponse;
 import com.example.bloombackend.achievement.controller.response.DailyFlowerResponse;
@@ -47,5 +48,10 @@ public class AchievementController {
     @GetMapping("/recent-six-months")
     public ResponseEntity<RecentSixMonthDataResponse> getRecentSixMonthsAchievements(@CurrentUser Long userId) {
         return ResponseEntity.ok(achievementService.getRecentSixMonthsAchievements(userId));
+    }
+
+    @GetMapping("")
+    public ResponseEntity<DailyAchievementResponse> getTodayAchievement(@CurrentUser Long userId) {
+        return ResponseEntity.ok(achievementService.getDailyAchievement(userId));
     }
 }

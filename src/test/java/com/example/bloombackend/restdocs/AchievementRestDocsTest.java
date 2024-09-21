@@ -6,6 +6,7 @@ import com.example.bloombackend.achievement.entity.DailyAchievementEntity;
 import com.example.bloombackend.achievement.entity.FlowerEntity;
 import com.example.bloombackend.achievement.repository.DailyAchievementRepository;
 import com.example.bloombackend.achievement.repository.FlowerRepository;
+import com.example.bloombackend.global.AIUtil;
 import com.example.bloombackend.global.config.JwtTokenProvider;
 import com.example.bloombackend.oauth.OAuthProvider;
 import com.example.bloombackend.user.entity.UserEntity;
@@ -26,6 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -55,6 +57,9 @@ public class AchievementRestDocsTest {
     @SpyBean
     private JwtTokenProvider jwtTokenProvider;
 
+    @SpyBean
+    private AIUtil aiUtil;
+
     private UserEntity testUser;
 
     private FlowerEntity flowerEntity;
@@ -69,6 +74,9 @@ public class AchievementRestDocsTest {
         mockToken = "jwtToken";
         testUser = userRepository.save(new UserEntity(OAuthProvider.KAKAO, "testUser", "testId"));
         doReturn(testUser.getId()).when(jwtTokenProvider).getUserIdFromToken(mockToken);
+
+        // 외부 API 호출의 경우 테스트 시 Mocking 처리
+        doReturn("AI 총평 데이터").when(aiUtil).generateCompletion(anyString());
 
         // 테스트 용 꽃 엔티티 등록
         flowerEntity = new FlowerEntity("https://test.com/flower1.png", "튤립");
@@ -170,7 +178,8 @@ public class AchievementRestDocsTest {
                                 fieldWithPath("monthlyData[]").description("월별 데이터"),
                                 fieldWithPath("monthlyData[].month").description("조회된 월"),
                                 fieldWithPath("monthlyData[].bloomed").description("꽃이 핀 횟수"),
-                                fieldWithPath("averageBloomed").description("평균 꽃이 핀 횟수")
+                                fieldWithPath("averageBloomed").description("평균 꽃이 핀 횟수"),
+                                fieldWithPath("aiSummary").description("AI 총평")
                         )
                 ));
     }

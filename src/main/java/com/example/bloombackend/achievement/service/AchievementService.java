@@ -13,6 +13,10 @@ import com.example.bloombackend.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.example.bloombackend.global.AIUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.example.bloombackend.achievement.service.prompt.AchievementAIPrompt;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,11 +29,15 @@ public class AchievementService {
     private final DailyAchievementRepository dailyAchievementRepository;
     private final FlowerRepository flowerRepository;
     private final UserRepository userRepository;
+    private final AIUtil aiUtil;
+    private final ObjectMapper objectMapper;
 
-    public AchievementService(DailyAchievementRepository dailyAchievementRepository, FlowerRepository flowerRepository, UserRepository userRepository) {
+    public AchievementService(DailyAchievementRepository dailyAchievementRepository, FlowerRepository flowerRepository, UserRepository userRepository, AIUtil aiUtil, ObjectMapper objectMapper) {
         this.dailyAchievementRepository = dailyAchievementRepository;
         this.flowerRepository = flowerRepository;
         this.userRepository = userRepository;
+        this.aiUtil = aiUtil;
+        this.objectMapper = objectMapper;
     }
 
     @Transactional
@@ -90,15 +98,39 @@ public class AchievementService {
 
     @Transactional(readOnly = true)
     public RecentSixMonthDataResponse getRecentSixMonthsAchievements(Long userId) {
-        List<MonthlyAchievementResponse> monthlyAchievements = dailyAchievementRepository.getRecentSixMonthsAchievements(userId);
-        return new RecentSixMonthDataResponse(monthlyAchievements, getAverageBloomed(monthlyAchievements));
+        List<MonthlyAchievementResponse> monthlyAchievements = getMonthlyAchievements(userId);
+        double averageBloomed = calculateAverageBloomed(monthlyAchievements);
+        String summary = generateAchievementSummary(monthlyAchievements, averageBloomed);
+        return new RecentSixMonthDataResponse(monthlyAchievements, averageBloomed, summary);
     }
 
-    private double getAverageBloomed(List<MonthlyAchievementResponse> monthlyAchievements) {
+    private List<MonthlyAchievementResponse> getMonthlyAchievements(Long userId) {
+        return dailyAchievementRepository.getRecentSixMonthsAchievements(userId);
+    }
+
+    private double calculateAverageBloomed(List<MonthlyAchievementResponse> monthlyAchievements) {
         return monthlyAchievements.stream()
                 .mapToInt(MonthlyAchievementResponse::bloomed)
                 .average()
                 .orElse(0);
+    }
+
+    private String generateAchievementSummary(List<MonthlyAchievementResponse> monthlyAchievements, double averageBloomed) {
+        String monthlyData = serializeMonthlyAchievements(monthlyAchievements);
+        String prompt = createAIPrompt(monthlyData, averageBloomed);
+        return aiUtil.generateCompletion(prompt);
+    }
+
+    private String serializeMonthlyAchievements(List<MonthlyAchievementResponse> monthlyAchievements) {
+        try {
+            return objectMapper.writeValueAsString(monthlyAchievements);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String createAIPrompt(String monthlyData, double averageBloomed) {
+        return String.format(AchievementAIPrompt.ACHIEVEMENT_SUMMARY_PROMPT, monthlyData, averageBloomed);
     }
 
     @Transactional(readOnly = true)

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.example.bloombackend.bottlemsg.entity.BottleMessageEntity;
+import com.example.bloombackend.bottlemsg.entity.Nagativity;
 import com.example.bloombackend.bottlemsg.entity.QBottleMessageEntity;
 import com.example.bloombackend.bottlemsg.entity.QBottleMessageReceiptLog;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -25,10 +26,12 @@ public class BottleMessageRepositoryImpl implements BottleMessageRepositoryCusto
 		return queryFactory
 			.selectFrom(bottleMessage)
 			.where(bottleMessage.id.notIn(
-				queryFactory.select(receiptLog.message.id)
-					.from(receiptLog)
-					.where(receiptLog.recipient.id.eq(userId))
-			), bottleMessage.sender.id.ne(userId))
+					queryFactory.select(receiptLog.message.id)
+						.from(receiptLog)
+						.where(receiptLog.recipient.id.eq(userId))
+				), bottleMessage.sender.id.ne(userId),
+				bottleMessage.nagativity.eq(Nagativity.valueOf("LOWER"))
+			)// 부정적 영향 여부 필터링
 			.fetch();
 	}
 

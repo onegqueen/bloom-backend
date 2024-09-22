@@ -24,10 +24,13 @@ import com.example.bloombackend.bottlemsg.controller.dto.response.UserBottleMess
 import com.example.bloombackend.bottlemsg.entity.BottleMessageEntity;
 import com.example.bloombackend.bottlemsg.entity.BottleMessageReaction;
 import com.example.bloombackend.bottlemsg.entity.BottleMessageReceiptLog;
+import com.example.bloombackend.bottlemsg.entity.Nagativity;
 import com.example.bloombackend.bottlemsg.entity.ReactionType;
 import com.example.bloombackend.bottlemsg.repository.BottleMessageLogRepository;
 import com.example.bloombackend.bottlemsg.repository.BottleMessageReactionRepository;
 import com.example.bloombackend.bottlemsg.repository.BottleMessageRepository;
+import com.example.bloombackend.claude.dto.SentimentAnalysisDto;
+import com.example.bloombackend.claude.service.ClaudeService;
 import com.example.bloombackend.user.entity.UserEntity;
 import com.example.bloombackend.user.service.UserService;
 
@@ -37,25 +40,33 @@ public class BottleMessageService {
 	private final BottleMessageLogRepository bottleMessageLogRepository;
 	private final UserService userService;
 	private final BottleMessageReactionRepository bottleMessageReactionRepository;
+	private final ClaudeService claudeService;
 
 	@Autowired
 	public BottleMessageService(BottleMessageRepository bottleMessageRepository,
 		BottleMessageLogRepository bottleMessageLogRepository, UserService userService,
-		BottleMessageReactionRepository bottleMessageReactionRepository) {
+		BottleMessageReactionRepository bottleMessageReactionRepository, ClaudeService claudeService) {
 		this.bottleMessageRepository = bottleMessageRepository;
 		this.bottleMessageLogRepository = bottleMessageLogRepository;
 		this.userService = userService;
 		this.bottleMessageReactionRepository = bottleMessageReactionRepository;
+		this.claudeService = claudeService;
 	}
 
 	@Transactional
 	public CreateBottleMessageResponse createBottleMessage(Long userId, CreateBottleMessageRequest request) {
+		SentimentAnalysisDto analyze = analysisMessage(request.content());
 		return CreateBottleMessageResponse.of(bottleMessageRepository.save(BottleMessageEntity.builder()
 			.content(request.content())
 			.user(userService.findUserById(userId))
 			.title(request.title())
 			.postcardUrl(request.postCard())
-			.build()).getId());
+			.nagativity(Nagativity.valueOf(analyze.negativeImpact()))
+			.build()).getId(), analyze);
+	}
+
+	private SentimentAnalysisDto analysisMessage(String content) {
+		return claudeService.callClaudeForSentimentAnalysis(content);
 	}
 
 	@Transactional

@@ -1,4 +1,4 @@
-package com.example.bloombackend.oauth.client;
+package com.example.bloombackend.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,7 +1,13 @@
 package com.example.bloombackend.bottlemsg.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.bloombackend.bottlemsg.controller.dto.request.CreateBottleMessageReactionRequest;
 import com.example.bloombackend.bottlemsg.controller.dto.request.CreateBottleMessageRequest;
@@ -34,8 +40,9 @@ public class BottleMessageController {
 	}
 
 	@GetMapping("/{messageId}")
-	public ResponseEntity<BottleMessageWithReactionResponse> getBottleMessage(@CurrentUser Long userId, @PathVariable Long messageId) {
-		return ResponseEntity.ok(bottleMessageService.getBottleMessage(messageId,userId));
+	public ResponseEntity<BottleMessageWithReactionResponse> getBottleMessage(@CurrentUser Long userId,
+		@PathVariable("messageId") Long messageId) {
+		return ResponseEntity.ok(bottleMessageService.getBottleMessage(messageId, userId));
 	}
 
 	@GetMapping("/random")
@@ -47,14 +54,14 @@ public class BottleMessageController {
 	public ResponseEntity<BottleMessageReactionResponse> reactBottleMessage(
 		@CurrentUser Long userId,
 		@RequestBody CreateBottleMessageReactionRequest request,
-		@PathVariable Long messageId) {
-		return ResponseEntity.ok(bottleMessageService.updateBottleMessageReaction(messageId, userId,request));
+		@PathVariable(name = "messageId") Long messageId) {
+		return ResponseEntity.ok(bottleMessageService.updateBottleMessageReaction(messageId, userId, request));
 	}
 
 	@PostMapping("/{messageId}/delete")
 	public ResponseEntity<UserBottleMessagesResponse> deleteBottleMessage(
 		@CurrentUser Long userId,
-		@PathVariable Long messageId) {
+		@PathVariable(name = "messageId") Long messageId) {
 		return ResponseEntity.ok(bottleMessageService.deleteBottleMessage(userId, messageId));
 	}
 
@@ -65,11 +72,11 @@ public class BottleMessageController {
 
 	@DeleteMapping("/{messageId}/react")
 	public ResponseEntity<Void> deleteBottleMessageReaction(
-			@CurrentUser Long userId,
-			@PathVariable Long messageId,
-			@RequestBody CreateBottleMessageReactionRequest request
-	){
-		bottleMessageService.deleteBottleMessageReaction(messageId,userId, request.reaction());
+		@CurrentUser Long userId,
+		@PathVariable(name = "messageId") Long messageId,
+		@RequestBody CreateBottleMessageReactionRequest request
+	) {
+		bottleMessageService.deleteBottleMessageReaction(messageId, userId, request.reaction());
 		return ResponseEntity.ok().build();
 	}
 }

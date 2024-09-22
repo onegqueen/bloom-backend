@@ -1,0 +1,151 @@
+= API 문서
+BloomBackend Team
+2024-08-27
+:toc: left
+:toclevels: 2
+:source-highlighter: highlightjs
+:sectlinks:
+
+== 유리병 메시지 API
+
+=== 1. 유리병 메시지 등록
+
+==== HTTP request
+
+include::{snippets}/api-bottle-message-test/post-bottle-message/http-request.adoc[]
+
+==== request body
+
+include::{snippets}/api-bottle-message-test/post-bottle-message/request-body.adoc[]
+
+==== HTTP response
+
+include::{snippets}/api-bottle-message-test/post-bottle-message/http-response.adoc[]
+
+==== response body
+
+include::{snippets}/api-bottle-message-test/post-bottle-message/response-fields.adoc[]
+
+=== 2. 유리병 메시지 랜덤조회
+
+==== HTTP request
+
+include::{snippets}/api-bottle-message-test/get-random-bottle-message/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/api-bottle-message-test/get-random-bottle-message/http-response.adoc[]
+
+==== response body
+
+include::{snippets}/api-bottle-message-test/get-random-bottle-message/response-fields.adoc[]
+
+=== 3. 받은 유리병 메시지 목록 조회
+
+==== HTTP request
+
+include::{snippets}/api-bottle-message-test/get-bottle-messages/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/api-bottle-message-test/get-bottle-messages/http-response.adoc[]
+
+==== response body
+
+include::{snippets}/api-bottle-message-test/get-bottle-messages/response-fields.adoc[]
+
+=== 4. 유리병 메시지 상세조회
+
+==== HTTP request
+
+include::{snippets}/api-bottle-message-test/get-bottle-message/http-request.adoc[]
+
+==== path parameter
+
+include::{snippets}/api-bottle-message-test/get-bottle-message/path-parameters.adoc[]
+
+==== HTTP response
+
+include::{snippets}/api-bottle-message-test/get-bottle-message/http-response.adoc[]
+
+==== response body
+
+include::{snippets}/api-bottle-message-test/get-bottle-message/response-fields.adoc[]
+
+=== 5. 받은 유리병 메시지 삭제
+
+==== HTTP request
+
+include::{snippets}/api-bottle-message-test/delete-bottle-message/http-request.adoc[]
+
+==== path parameter
+
+include::{snippets}/api-bottle-message-test/delete-bottle-message/path-parameters.adoc[]
+
+==== HTTP response
+
+include::{snippets}/api-bottle-message-test/delete-bottle-message/http-response.adoc[]
+
+==== response body
+
+include::{snippets}/api-bottle-message-test/delete-bottle-message/response-fields.adoc[]
+
+=== 6. 보낸 유리병 메시지 목록 조회
+
+==== HTTP request
+
+include::{snippets}/api-bottle-message-test/get-sent-bottle-messages/http-request.adoc[]
+
+==== HTTP response
+
+include::{snippets}/api-bottle-message-test/get-sent-bottle-messages/http-response.adoc[]
+
+==== response body
+
+include::{snippets}/api-bottle-message-test/get-sent-bottle-messages/response-fields.adoc[]
+
+=== 7. 유리병 메시지 반응 등록
+
+==== HTTP request
+
+include::{snippets}/api-bottle-message-test/post-bottle-message-reaction/http-request.adoc[]
+
+==== path parameter
+
+include::{snippets}/api-bottle-message-test/post-bottle-message-reaction/path-parameters.adoc[]
+
+==== request body
+
+include::{snippets}/api-bottle-message-test/post-bottle-message-reaction/request-body.adoc[]
+
+==== HTTP response
+
+include::{snippets}/api-bottle-message-test/post-bottle-message-reaction/http-response.adoc[]
+
+==== response body
+
+include::{snippets}/api-bottle-message-test/post-bottle-message-reaction/response-fields.adoc[]
+
+=== 8. 유리병 메시지 반응 삭제
+
+==== HTTP request
+
+include::{snippets}/api-bottle-message-test/delete-bottle-messages-reaction/http-request.adoc[]
+
+==== path parameter
+
+include::{snippets}/api-bottle-message-test/delete-bottle-messages-reaction/path-parameters.adoc[]
+
+==== request body
+
+include::{snippets}/api-bottle-message-test/delete-bottle-messages-reaction/request-body.adoc[]
+
+==== HTTP response
+
+include::{snippets}/api-bottle-message-test/delete-bottle-messages-reaction/http-response.adoc[]
+
+
+
+
+
+

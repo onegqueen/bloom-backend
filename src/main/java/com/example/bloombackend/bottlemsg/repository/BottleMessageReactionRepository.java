@@ -13,5 +13,5 @@ public interface BottleMessageReactionRepository
 	extends JpaRepository<BottleMessageReaction, Long>, BottleMessageReactionRepositoryCustom {
 	Optional<BottleMessageReaction> findByReactor(UserEntity reactor);
 
-	Void deleteByMessageIdAndReactorAndReactionType(Long messageId, UserEntity reactor, ReactionType reactionType);
+	void deleteByMessageIdAndReactorAndReactionType(Long messageId, UserEntity reactor, ReactionType reactionType);
 }

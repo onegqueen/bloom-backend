@@ -77,7 +77,7 @@ public class BottleMessageService {
 	}
 
 	private boolean isReacted(Long userId) {
-		return bottleMessageReactionRepository.findByReactorId(userId).isPresent();
+		return bottleMessageReactionRepository.findByReactor(userService.findUserById(userId)).isPresent();
 	}
 
 	private void createBottleMessageReceiptLog(Long userId, BottleMessageEntity message) {
@@ -114,10 +114,17 @@ public class BottleMessageService {
 	}
 
 	private BottleMessageLogResponse getDateLog(Long messageId, Long userId) {
-		BottleMessageReceiptLog log = bottleMessageLogRepository.findByMessageIdAndRecipient(messageId,
-			userService.findUserById(userId)).get();
+		Optional<BottleMessageReceiptLog> log = bottleMessageLogRepository.findByMessageIdAndRecipientId(
+			messageId,
+			userId);
 		BottleMessageEntity message = getBottleMessageEntity(messageId);
-		return new BottleMessageLogResponse(localDateToString(log.getReceivedAt(), "yyyy-MM-dd HH:mm:ss"),
+
+		if (log.isPresent()) {
+			return new BottleMessageLogResponse(localDateToString(log.get().getReceivedAt(), "yyyy-MM-dd HH:mm:ss"),
+				localDateToString(message.getCreatedAt(), "yyyy-MM-dd HH:mm:ss"));
+		}
+
+		return new BottleMessageLogResponse("never received the message",
 			localDateToString(message.getCreatedAt(), "yyyy-MM-dd HH:mm:ss"));
 	}
 
@@ -141,8 +148,8 @@ public class BottleMessageService {
 
 	@Transactional
 	public UserBottleMessagesResponse deleteBottleMessage(Long userId, Long messageId) {
-		Optional<BottleMessageReceiptLog> message = bottleMessageLogRepository.findByMessageIdAndRecipient(
-			messageId, userService.findUserById(userId));
+		Optional<BottleMessageReceiptLog> message = bottleMessageLogRepository.findByMessageIdAndRecipientId(
+			messageId, userId);
 
 		if (message.isPresent()) {
 			message.get().delete();
@@ -158,7 +165,7 @@ public class BottleMessageService {
 
 	@Transactional(readOnly = true)
 	public UserBottleMessagesResponse getSentBottleMessages(Long userId) {
-		List<BottleMessageEntity> sentMessages = bottleMessageRepository.findBySenderId(userId);
+		List<BottleMessageEntity> sentMessages = bottleMessageRepository.findBySender(userService.findUserById(userId));
 		return getBottleMessages(sentMessages, userId);
 	}
 

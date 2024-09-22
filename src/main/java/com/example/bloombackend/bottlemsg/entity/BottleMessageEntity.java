@@ -71,6 +71,7 @@ public class BottleMessageEntity {
 			.content(content)
 			.title(title)
 			.postCardUrl(postcardUrl)
+			.negativity(nagativity.name())
 			.build();
 	}
 }

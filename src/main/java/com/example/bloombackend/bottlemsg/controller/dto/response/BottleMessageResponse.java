@@ -7,6 +7,7 @@ public record BottleMessageResponse(
 	Long messageId,
 	String title,
 	String content,
-	String postCardUrl
+	String postCardUrl,
+	String negativity
 ) {
 }

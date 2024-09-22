@@ -35,32 +35,25 @@ public class ClaudeService {
 	private ClaudeResponseHandler claudeResponseHandler;
 
 	public SentimentAnalysisDto callClaudeForSentimentAnalysis(String textToAnalyze) {
-		// API 엔드포인트
 		String apiUrl = "https://api.anthropic.com/v1/messages";
 
-		// 요청 헤더 설정
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.set("x-api-key", apiKey);
 		headers.set("anthropic-version", anthropicVersion);
 
-		// 요청 본문 구성
 		JSONObject requestBody = new JSONObject();
-		requestBody.put("model", modelName);  // Claude 모델
-		requestBody.put("max_tokens", 1024);  // 최대 토큰 수
+		requestBody.put("model", modelName);
+		requestBody.put("max_tokens", 1024);
 
-		// 감정 분석을 위한 요청 메시지 구성
 		JSONObject message = new JSONObject();
 		message.put("role", "user");
 		message.put("content", analyzeEmotionPrompt(textToAnalyze));
 
-		// 메시지 배열에 추가
 		requestBody.put("messages", new JSONArray().put(message));
 
-		// 요청 엔터티 생성 (헤더 + 본문)
 		HttpEntity<String> entity = new HttpEntity<>(requestBody.toString(), headers);
 
-		// API 호출
 		String response = restTemplate.exchange(
 			apiUrl,
 			HttpMethod.POST,
